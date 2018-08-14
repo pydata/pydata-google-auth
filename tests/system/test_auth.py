@@ -6,7 +6,23 @@ except ImportError:  # pragma: NO COVER
     from unittest import mock
 import pytest
 
-from pandas_gbq import auth
+from pydata_google_auth import auth
+
+
+def _try_credentials(credentials, project_id):
+    from google.cloud import bigquery
+    import google.api_core.exceptions
+
+    if not credentials or not project_id:
+        return credentials, project_id
+
+    try:
+        client = bigquery.Client(project=project_id, credentials=credentials)
+        # Check if the application has rights to the BigQuery project
+        client.query('SELECT 1').result()
+        return credentials, project_id
+    except google.api_core.exceptions.GoogleAPIError:
+        return None, None
 
 
 def _check_if_can_get_correct_default_credentials():
@@ -16,12 +32,11 @@ def _check_if_can_get_correct_default_credentials():
 
     import google.auth
     from google.auth.exceptions import DefaultCredentialsError
-    import pandas_gbq.auth
-    import pandas_gbq.gbq
+    import pydata_google_auth.auth
 
     try:
         credentials, project = google.auth.default(
-            scopes=pandas_gbq.auth.SCOPES)
+            scopes=['https://www.googleapis.com/auth/bigquery'])
     except (DefaultCredentialsError, IOError):
         return False
 
@@ -32,23 +47,6 @@ def test_should_be_able_to_get_valid_credentials(project_id, private_key_path):
     credentials, _ = auth.get_credentials(
         project_id=project_id, private_key=private_key_path)
     assert credentials.valid
-
-
-def test_get_service_account_credentials_private_key_path(private_key_path):
-    from google.auth.credentials import Credentials
-    credentials, project_id = auth.get_service_account_credentials(
-        private_key_path)
-    assert isinstance(credentials, Credentials)
-    assert auth._try_credentials(project_id, credentials) is not None
-
-
-def test_get_service_account_credentials_private_key_contents(
-        private_key_contents):
-    from google.auth.credentials import Credentials
-    credentials, project_id = auth.get_service_account_credentials(
-        private_key_contents)
-    assert isinstance(credentials, Credentials)
-    assert auth._try_credentials(project_id, credentials) is not None
 
 
 def test_get_application_default_credentials_does_not_throw_error():

@@ -4,7 +4,7 @@
 
 *   and push to github
 
-        git push pandas-gbq master --tags
+        git push upstream master --tags
 
 *  Build the package
 
@@ -23,7 +23,7 @@
 
         twine upload dist/*
 
-*  Do a pull-request to the feedstock on `pandas-gbq-feedstock <https://github.com/conda-forge/pandas-gbq-feedstock/>`__
+*  Do a pull-request to the feedstock on `pydata-google-auth-feedstock <https://github.com/conda-forge/pydata-google-auth-feedstock/>`__
 
         update the version
         update the SHA256 (retrieve from PyPI)

@@ -4,7 +4,7 @@
 import versioneer
 from setuptools import find_packages, setup
 
-NAME = 'pandas-gbq'
+NAME = 'pydata-google-auth'
 
 
 # versioning
@@ -18,26 +18,20 @@ def readme():
 
 INSTALL_REQUIRES = [
     'setuptools',
-    'pandas',
     'google-auth',
     'google-auth-oauthlib',
-    'google-cloud-bigquery>=0.32.0',
 ]
-
-extras = {
-    'tqdm': 'tqdm>=4.23.0',
-}
 
 setup(
     name=NAME,
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
-    description="Pandas interface to Google BigQuery",
+    description="PyData helpers for authenticating to Google APIs",
     long_description=readme(),
     license='BSD License',
     author='The PyData Development Team',
     author_email='pydata@googlegroups.com',
-    url='https://github.com/pydata/pandas-gbq',
+    url='https://github.com/pydata/pydata-google-auth',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
@@ -53,7 +47,6 @@ setup(
     ],
     keywords='data',
     install_requires=INSTALL_REQUIRES,
-    extras_require=extras,
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     test_suite='tests',
 )
