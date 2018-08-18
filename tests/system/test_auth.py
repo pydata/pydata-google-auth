@@ -1,51 +1,44 @@
 """System tests for fetching Google BigQuery credentials."""
 
+import google.auth
 try:
     import mock
 except ImportError:  # pragma: NO COVER
     from unittest import mock
 import pytest
+import requests
 
 from pydata_google_auth import auth
 
 
-def _try_credentials(credentials, project_id):
-    from google.cloud import bigquery
-    import google.api_core.exceptions
-
-    if not credentials or not project_id:
-        return credentials, project_id
-
-    try:
-        client = bigquery.Client(project=project_id, credentials=credentials)
-        # Check if the application has rights to the BigQuery project
-        client.query('SELECT 1').result()
-        return credentials, project_id
-    except google.api_core.exceptions.GoogleAPIError:
-        return None, None
+TEST_CLIENT_ID = (
+    '262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd.apps.googleusercontent.com'
+)
+TEST_CLIENT_SECRET = 'JSF-iczmzEgbTR-XK-2xaWAc'
+TEST_SCOPES = ['https://www.googleapis.com/auth/userinfo.email']
 
 
 def _check_if_can_get_correct_default_credentials():
     # Checks if "Application Default Credentials" can be fetched
     # from the environment the tests are running in.
     # See https://github.com/pandas-dev/pandas/issues/13577
-
-    import google.auth
     from google.auth.exceptions import DefaultCredentialsError
-    import pydata_google_auth.auth
 
     try:
-        credentials, project = google.auth.default(
-            scopes=['https://www.googleapis.com/auth/bigquery'])
+        credentials, project = google.auth.default(TEST_SCOPES)
     except (DefaultCredentialsError, IOError):
         return False
 
-    return auth._try_credentials(project, credentials) is not None
+    return _try_credentials(credentials, project) is None
 
 
-def test_should_be_able_to_get_valid_credentials(project_id, private_key_path):
-    credentials, _ = auth.get_credentials(
-        project_id=project_id, private_key=private_key_path)
+def test_should_be_able_to_get_valid_credentials():
+    credentials, _ = auth.default(
+        TEST_SCOPES,
+        TEST_CLIENT_ID,
+        TEST_CLIENT_SECRET,
+        'pydata_google_auth',
+        'test_credentials.dat')
     assert credentials.valid
 
 
@@ -76,7 +69,12 @@ def test_get_application_default_credentials_returns_credentials():
 def test_get_user_account_credentials_bad_file_returns_credentials():
     from google.auth.credentials import Credentials
     with mock.patch('__main__.open', side_effect=IOError()):
-        credentials = auth.get_user_account_credentials()
+        credentials = auth.get_user_account_credentials(
+            TEST_SCOPES,
+            TEST_CLIENT_ID,
+            TEST_CLIENT_SECRET,
+            'pydata_google_auth',
+            'test_credentials.dat')
     assert isinstance(credentials, Credentials)
 
 
