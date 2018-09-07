@@ -8,7 +8,7 @@ try:
 except ImportError:  # pragma: NO COVER
     from unittest import mock
 
-from pandas_gbq import auth
+from pydata_google_auth import auth
 
 
 def test_get_credentials_private_key_contents(monkeypatch):

@@ -18,20 +18,6 @@ TEST_CLIENT_SECRET = 'JSF-iczmzEgbTR-XK-2xaWAc'
 TEST_SCOPES = ['https://www.googleapis.com/auth/userinfo.email']
 
 
-def _check_if_can_get_correct_default_credentials():
-    # Checks if "Application Default Credentials" can be fetched
-    # from the environment the tests are running in.
-    # See https://github.com/pandas-dev/pandas/issues/13577
-    from google.auth.exceptions import DefaultCredentialsError
-
-    try:
-        credentials, project = google.auth.default(TEST_SCOPES)
-    except (DefaultCredentialsError, IOError):
-        return False
-
-    return _try_credentials(credentials, project) is None
-
-
 def test_should_be_able_to_get_valid_credentials():
     credentials, _ = auth.default(
         TEST_SCOPES,
