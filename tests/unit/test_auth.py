@@ -4,64 +4,19 @@ import json
 import os.path
 
 try:
-    import mock
-except ImportError:  # pragma: NO COVER
     from unittest import mock
+except ImportError:  # pragma: NO COVER
+    import mock
 
-from pydata_google_auth import auth
-
-
-def test_get_credentials_private_key_contents(monkeypatch):
-    from google.oauth2 import service_account
-
-    @classmethod
-    def from_service_account_info(cls, key_info):
-        mock_credentials = mock.create_autospec(cls)
-        mock_credentials.with_scopes.return_value = mock_credentials
-        mock_credentials.refresh.return_value = mock_credentials
-        return mock_credentials
-
-    monkeypatch.setattr(
-        service_account.Credentials,
-        'from_service_account_info',
-        from_service_account_info)
-    private_key = json.dumps({
-        'private_key': 'some_key',
-        'client_email': 'service-account@example.com',
-        'project_id': 'private-key-project'
-    })
-    credentials, project = auth.get_credentials(private_key=private_key)
-
-    assert credentials is not None
-    assert project == 'private-key-project'
+import google.auth
+import google.auth.credentials
 
 
-def test_get_credentials_private_key_path(monkeypatch):
-    from google.oauth2 import service_account
-
-    @classmethod
-    def from_service_account_info(cls, key_info):
-        mock_credentials = mock.create_autospec(cls)
-        mock_credentials.with_scopes.return_value = mock_credentials
-        mock_credentials.refresh.return_value = mock_credentials
-        return mock_credentials
-
-    monkeypatch.setattr(
-        service_account.Credentials,
-        'from_service_account_info',
-        from_service_account_info)
-    private_key = os.path.join(
-        os.path.dirname(__file__), '..', 'data', 'dummy_key.json')
-    credentials, project = auth.get_credentials(private_key=private_key)
-
-    assert credentials is not None
-    assert project is None
+TEST_SCOPES = ['https://www.googleapis.com/auth/cloud-platform']
 
 
-def test_get_credentials_default_credentials(monkeypatch):
-    import google.auth
-    import google.auth.credentials
-    import google.cloud.bigquery
+def test_default_returns_google_auth_credentials(monkeypatch):
+    from pydata_google_auth import auth
 
     def mock_default_credentials(scopes=None, request=None):
         return (
@@ -70,17 +25,14 @@ def test_get_credentials_default_credentials(monkeypatch):
         )
 
     monkeypatch.setattr(google.auth, 'default', mock_default_credentials)
-    mock_client = mock.create_autospec(google.cloud.bigquery.Client)
-    monkeypatch.setattr(google.cloud.bigquery, 'Client', mock_client)
 
-    credentials, project = auth.get_credentials()
+    credentials, project = auth.default(TEST_SCOPES)
     assert project == 'default-project'
     assert credentials is not None
 
 
-def test_get_credentials_load_user_no_default(monkeypatch):
-    import google.auth
-    import google.auth.credentials
+def test_default_loads_user_credentials(monkeypatch):
+    from pydata_google_auth import auth
 
     def mock_default_credentials(scopes=None, request=None):
         return (None, None)
@@ -94,9 +46,9 @@ def test_get_credentials_load_user_no_default(monkeypatch):
 
     monkeypatch.setattr(
         auth,
-        'load_user_account_credentials',
+        'load_user_credentials_from_file',
         mock_load_credentials)
 
-    credentials, project = auth.get_credentials()
+    credentials, project = auth.default(TEST_SCOPES)
     assert project is None
     assert credentials is mock_user_credentials
