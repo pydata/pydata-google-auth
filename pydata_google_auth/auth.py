@@ -23,7 +23,7 @@ CLIENT_ID = (
 )
 CLIENT_SECRET = 'JSF-iczmzEgbTR-XK-2xaWAc'
 CREDENTIALS_DIRNAME = 'pydata'
-CREDENTIALS_FILENAME = 'google_credentials.json'
+CREDENTIALS_FILENAME = 'pydata_google_credentials.json'
 
 
 def default(
@@ -37,10 +37,10 @@ def default(
     # Try to retrieve Application Default Credentials
     credentials, default_project = get_application_default_credentials(scopes)
 
-    if credentials:
+    if credentials and credentials.valid:
         return credentials, default_project
 
-    credentials = get_user_account_credentials(
+    credentials = get_user_credentials(
         scopes,
         client_id=client_id,
         client_secret=client_secret,
@@ -49,9 +49,10 @@ def default(
         reauth=reauth,
         auth_local_webserver=auth_local_webserver)
 
-    if not credentials:
+    if not credentials or not credentials.valid:
         raise exceptions.PyDataCredentialsError(
             'Could not get any valid credentials.')
+
     return credentials, None
 
 
@@ -77,13 +78,19 @@ def get_application_default_credentials(scopes):
     """
 
     try:
-        return google.auth.default(scopes=scopes)
+        credentials, project = google.auth.default(scopes=scopes)
     except (google.auth.exceptions.DefaultCredentialsError, IOError) as exc:
         logger.debug('Error getting default credentials: {}'.format(str(exc)))
         return None, None
 
+    if credentials and not credentials.valid:
+        request = google.auth.transport.requests.Request()
+        credentials.refresh(request)
 
-def get_user_account_credentials(
+    return credentials, project
+
+
+def get_user_credentials(
         scopes,
         client_id=CLIENT_ID,
         client_secret=CLIENT_SECRET,
@@ -114,7 +121,7 @@ def get_user_account_credentials(
 
     credentials = None
     if not reauth:
-        credentials = load_user_account_credentials(credentials_path)
+        credentials = load_user_credentials_from_file(credentials_path)
 
     client_config = {
         'installed': {
@@ -141,10 +148,25 @@ def get_user_account_credentials(
 
         save_user_account_credentials(credentials, credentials_path)
 
+    if credentials and not credentials.valid:
+        request = google.auth.transport.requests.Request()
+        credentials.refresh(request)
+
     return credentials
 
 
-def load_user_account_credentials(credentials_path):
+def load_user_credentials_from_info(credentials_json):
+    return google.oauth2.credentials.Credentials(
+        token=credentials_json.get('access_token'),
+        refresh_token=credentials_json.get('refresh_token'),
+        id_token=credentials_json.get('id_token'),
+        token_uri=credentials_json.get('token_uri'),
+        client_id=credentials_json.get('client_id'),
+        client_secret=credentials_json.get('client_secret'),
+        scopes=credentials_json.get('scopes'))
+
+
+def load_user_credentials_from_file(credentials_path):
     """
     Loads user account credentials from a local file.
 
@@ -172,16 +194,7 @@ def load_user_account_credentials(credentials_path):
             credentials_path, str(exc)))
         return None
 
-    credentials = google.oauth2.credentials.Credentials(
-        token=credentials_json.get('access_token'),
-        refresh_token=credentials_json.get('refresh_token'),
-        id_token=credentials_json.get('id_token'),
-        token_uri=credentials_json.get('token_uri'),
-        client_id=credentials_json.get('client_id'),
-        client_secret=credentials_json.get('client_secret'),
-        scopes=credentials_json.get('scopes'))
-
-    return credentials
+    return load_user_credentials_from_info(credentials_json)
 
 
 def get_default_credentials_path(credentials_dirname, credentials_filename):
