@@ -1,4 +1,4 @@
-.. currentmodule:: pandas_gbq
+.. currentmodule:: pydata_google_auth
 .. _api:
 
 *************
@@ -7,13 +7,14 @@ API Reference
 
 .. note::
 
-  Only functions and classes which are members of the ``pandas_gbq`` module
-  are considered public. Submodules and their members are considered private.
+  Only functions and classes which are members of the ``pydata_google_auth``
+  module are considered public. Submodules and their members are considered
+  private.
 
 .. autosummary::
 
-   read_gbq
-   to_gbq
+   default
+   get_user_credentials
 
-.. autofunction:: read_gbq
-.. autofunction:: to_gbq
+.. autofunction:: default
+.. autofunction:: get_user_credentials

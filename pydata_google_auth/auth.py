@@ -28,12 +28,33 @@ CREDENTIALS_FILENAME = 'pydata_google_credentials.json'
 
 def default(
         scopes,
-        client_id=CLIENT_ID,
-        client_secret=CLIENT_SECRET,
-        credentials_dirname=CREDENTIALS_DIRNAME,
-        credentials_filename=CREDENTIALS_FILENAME,
+        auth_local_webserver=False,
         reauth=False,
-        auth_local_webserver=False):
+        client_id=None,
+        client_secret=None,
+        credentials_dirname=CREDENTIALS_DIRNAME,
+        credentials_filename=CREDENTIALS_FILENAME):
+    """Authenticate to Google APIs.
+
+    This function first attempts to get default credentials via
+    :func:`google.auth.default`. If that fails, it attempts to authenticate
+    using user credentials.
+
+    Parameters
+    ----------
+    scopes : List[str]
+        A list of `Google OAuth 2.0 scopes
+        <https://developers.google.com/identity/protocols/googlescopes>`_
+        describing the resources to access.
+    client
+    """
+    # Use a default of None to avoid showing default client_id and
+    # client_secret in the docs.
+    if client_id is None:
+        client_id = CLIENT_ID
+    if client_secret is None:
+        client_secret = CLIENT_SECRET
+
     # Try to retrieve Application Default Credentials
     credentials, default_project = get_application_default_credentials(scopes)
 
@@ -92,8 +113,8 @@ def get_application_default_credentials(scopes):
 
 def get_user_credentials(
         scopes,
-        client_id=CLIENT_ID,
-        client_secret=CLIENT_SECRET,
+        client_id=None,
+        client_secret=None,
         credentials_dirname=CREDENTIALS_DIRNAME,
         credentials_filename=CREDENTIALS_FILENAME,
         reauth=False,
@@ -112,6 +133,13 @@ def get_user_credentials(
     GoogleCredentials : credentials
         Credentials for the user with BigQuery access.
     """
+    # Use a default of None to avoid showing default client_id and
+    # client_secret in the docs.
+    if client_id is None:
+        client_id = CLIENT_ID
+    if client_secret is None:
+        client_secret = CLIENT_SECRET
+
     # Use the default credentials location under ~/.config and the
     # equivalent directory on windows if the user has not specified a
     # credentials path.
