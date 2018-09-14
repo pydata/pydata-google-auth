@@ -4,17 +4,12 @@ from .auth import get_user_credentials
 from ._version import get_versions
 
 versions = get_versions()
-__version__ = versions.get('closest-tag', versions['version'])
-__git_revision__ = versions['full-revisionid']
+__version__ = versions.get("closest-tag", versions["version"])
+__git_revision__ = versions["full-revisionid"]
 
 """pydata-google-auth
 
 This package provides helpers for fetching Google API credentials.
 """
 
-__all__ = [
-    '__version__',
-    '__git_revision__',
-    'default',
-    'get_user_credentials',
-]
+__all__ = ["__version__", "__git_revision__", "default", "get_user_credentials"]

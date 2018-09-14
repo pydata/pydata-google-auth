@@ -18,22 +18,22 @@ from pydata_google_auth import exceptions
 logger = logging.getLogger(__name__)
 
 CLIENT_ID = (
-    '262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd'
-    '.apps.googleusercontent.com'
+    "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd" ".apps.googleusercontent.com"
 )
-CLIENT_SECRET = 'JSF-iczmzEgbTR-XK-2xaWAc'
-CREDENTIALS_DIRNAME = 'pydata'
-CREDENTIALS_FILENAME = 'pydata_google_credentials.json'
+CLIENT_SECRET = "JSF-iczmzEgbTR-XK-2xaWAc"
+CREDENTIALS_DIRNAME = "pydata"
+CREDENTIALS_FILENAME = "pydata_google_credentials.json"
 
 
 def default(
-        scopes,
-        client_id=CLIENT_ID,
-        client_secret=CLIENT_SECRET,
-        credentials_dirname=CREDENTIALS_DIRNAME,
-        credentials_filename=CREDENTIALS_FILENAME,
-        reauth=False,
-        auth_local_webserver=False):
+    scopes,
+    client_id=CLIENT_ID,
+    client_secret=CLIENT_SECRET,
+    credentials_dirname=CREDENTIALS_DIRNAME,
+    credentials_filename=CREDENTIALS_FILENAME,
+    reauth=False,
+    auth_local_webserver=False,
+):
     # Try to retrieve Application Default Credentials
     credentials, default_project = get_application_default_credentials(scopes)
 
@@ -47,11 +47,11 @@ def default(
         credentials_dirname=credentials_dirname,
         credentials_filename=credentials_filename,
         reauth=reauth,
-        auth_local_webserver=auth_local_webserver)
+        auth_local_webserver=auth_local_webserver,
+    )
 
     if not credentials or not credentials.valid:
-        raise exceptions.PyDataCredentialsError(
-            'Could not get any valid credentials.')
+        raise exceptions.PyDataCredentialsError("Could not get any valid credentials.")
 
     return credentials, None
 
@@ -80,7 +80,7 @@ def get_application_default_credentials(scopes):
     try:
         credentials, project = google.auth.default(scopes=scopes)
     except (google.auth.exceptions.DefaultCredentialsError, IOError) as exc:
-        logger.debug('Error getting default credentials: {}'.format(str(exc)))
+        logger.debug("Error getting default credentials: {}".format(str(exc)))
         return None, None
 
     if credentials and not credentials.valid:
@@ -91,13 +91,14 @@ def get_application_default_credentials(scopes):
 
 
 def get_user_credentials(
-        scopes,
-        client_id=CLIENT_ID,
-        client_secret=CLIENT_SECRET,
-        credentials_dirname=CREDENTIALS_DIRNAME,
-        credentials_filename=CREDENTIALS_FILENAME,
-        reauth=False,
-        auth_local_webserver=False):
+    scopes,
+    client_id=CLIENT_ID,
+    client_secret=CLIENT_SECRET,
+    credentials_dirname=CREDENTIALS_DIRNAME,
+    credentials_filename=CREDENTIALS_FILENAME,
+    reauth=False,
+    auth_local_webserver=False,
+):
     """Gets user account credentials.
 
     This method authenticates using user credentials, either loading saved
@@ -116,26 +117,27 @@ def get_user_credentials(
     # equivalent directory on windows if the user has not specified a
     # credentials path.
     credentials_path = get_default_credentials_path(
-        credentials_dirname,
-        credentials_filename)
+        credentials_dirname, credentials_filename
+    )
 
     credentials = None
     if not reauth:
         credentials = load_user_credentials_from_file(credentials_path)
 
     client_config = {
-        'installed': {
-            'client_id': client_id,
-            'client_secret': client_secret,
-            'redirect_uris': ['urn:ietf:wg:oauth:2.0:oob'],
-            'auth_uri': 'https://accounts.google.com/o/oauth2/auth',
-            'token_uri': 'https://accounts.google.com/o/oauth2/token',
+        "installed": {
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "redirect_uris": ["urn:ietf:wg:oauth:2.0:oob"],
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://accounts.google.com/o/oauth2/token",
         }
     }
 
     if credentials is None:
         app_flow = flow.InstalledAppFlow.from_client_config(
-            client_config, scopes=scopes)
+            client_config, scopes=scopes
+        )
 
         try:
             if auth_local_webserver:
@@ -144,7 +146,8 @@ def get_user_credentials(
                 credentials = app_flow.run_console()
         except oauthlib.oauth2.rfc6749.errors.OAuth2Error as exc:
             raise exceptions.PyDataCredentialsError(
-                "Unable to get valid credentials: {0}".format(exc))
+                "Unable to get valid credentials: {0}".format(exc)
+            )
 
         save_user_account_credentials(credentials, credentials_path)
 
@@ -157,13 +160,14 @@ def get_user_credentials(
 
 def load_user_credentials_from_info(credentials_json):
     return google.oauth2.credentials.Credentials(
-        token=credentials_json.get('access_token'),
-        refresh_token=credentials_json.get('refresh_token'),
-        id_token=credentials_json.get('id_token'),
-        token_uri=credentials_json.get('token_uri'),
-        client_id=credentials_json.get('client_id'),
-        client_secret=credentials_json.get('client_secret'),
-        scopes=credentials_json.get('scopes'))
+        token=credentials_json.get("access_token"),
+        refresh_token=credentials_json.get("refresh_token"),
+        id_token=credentials_json.get("id_token"),
+        token_uri=credentials_json.get("token_uri"),
+        client_id=credentials_json.get("client_id"),
+        client_secret=credentials_json.get("client_secret"),
+        scopes=credentials_json.get("scopes"),
+    )
 
 
 def load_user_credentials_from_file(credentials_path):
@@ -190,8 +194,9 @@ def load_user_credentials_from_file(credentials_path):
         with open(credentials_path) as credentials_file:
             credentials_json = json.load(credentials_file)
     except (IOError, ValueError) as exc:
-        logger.debug('Error loading credentials from {}: {}'.format(
-            credentials_path, str(exc)))
+        logger.debug(
+            "Error loading credentials from {}: {}".format(credentials_path, str(exc))
+        )
         return None
 
     return load_user_credentials_from_info(credentials_json)
@@ -207,10 +212,10 @@ def get_default_credentials_path(credentials_dirname, credentials_filename):
     -------
     Path to the Google user credentials
     """
-    if os.name == 'nt':
-        config_path = os.environ['APPDATA']
+    if os.name == "nt":
+        config_path = os.environ["APPDATA"]
     else:
-        config_path = os.path.join(os.path.expanduser('~'), '.config')
+        config_path = os.path.join(os.path.expanduser("~"), ".config")
 
     config_path = os.path.join(config_path, credentials_dirname)
 
@@ -229,15 +234,15 @@ def save_user_account_credentials(credentials, credentials_path):
     .. versionadded 0.2.0
     """
     try:
-        with open(credentials_path, 'w') as credentials_file:
+        with open(credentials_path, "w") as credentials_file:
             credentials_json = {
-                'refresh_token': credentials.refresh_token,
-                'id_token': credentials.id_token,
-                'token_uri': credentials.token_uri,
-                'client_id': credentials.client_id,
-                'client_secret': credentials.client_secret,
-                'scopes': credentials.scopes,
+                "refresh_token": credentials.refresh_token,
+                "id_token": credentials.id_token,
+                "token_uri": credentials.token_uri,
+                "client_id": credentials.client_id,
+                "client_secret": credentials.client_secret,
+                "scopes": credentials.scopes,
             }
             json.dump(credentials_json, credentials_file)
     except IOError:
-        logger.warning('Unable to save credentials.')
+        logger.warning("Unable to save credentials.")
