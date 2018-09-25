@@ -31,6 +31,64 @@ def default(
     credentials_cache=cache.READ_WRITE,
     auth_local_webserver=False,
 ):
+    """
+    Get credentials and default project for accessing Google APIs.
+
+    This method first attempts to get credentials via the
+    :func:`google.auth.default` function. If it is unable to get valid
+    credentials, it then attempts to get user account credentials via the
+    :func:`pydata_google_auth.get_user_credentials` function.
+
+    Parameters
+    ----------
+    scopes : list[str]
+        A list of scopes to use when authenticating to Google APIs. See the
+        `list of OAuth 2.0 scopes for Google APIs
+        <https://developers.google.com/identity/protocols/googlescopes>`_.
+    client_id : str, optional
+        The client secrets to use when prompting for user credentials.
+        Defaults to a client ID associated with pydata-google-auth.
+
+        If you are a tool or library author, you must override the default
+        value with a client ID associated with your project. Per the `Google
+        APIs terms of service <https://developers.google.com/terms/>`_, you
+        must not mask your API client's identity when using Google APIs.
+    client_secret : str, optional
+        The client secrets to use when prompting for user credentials.
+        Defaults to a client secret associated with pydata-google-auth.
+
+        If you are a tool or library author, you must override the default
+        value with a client secret associated with your project. Per the
+        `Google APIs terms of service
+        <https://developers.google.com/terms/>`_, you must not mask your API
+        client's identity when using Google APIs.
+    credentials_cache : pydata_google_auth.cache.CredentialsCache, optional
+        An object responsible for loading and saving user credentials.
+
+        By default, pydata-google-auth reads and writes credentials in
+        ``$HOME/.config/pydata/pydata_google_credentials.json`` or
+        ``$APPDATA/.config/pydata/pydata_google_credentials.json`` on
+        Windows.
+    auth_local_webserver : bool, optional
+        Use a local webserver for the user authentication
+        :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Defaults to
+        ``False``, which requests a token via the console.
+
+    Returns
+    -------
+    credentials, project_id : tuple[google.auth.credentials.Credentials, str or None]
+        credentials : OAuth 2.0 credentials for accessing Google APIs
+
+        project_id : A default Google developer project ID, if one could be determined
+        from the credentials. For example, this returns the project ID
+        associated with a service account when using a service account key
+        file. It returns None when using user-based credentials.
+
+    Raises
+    ------
+    pydata_google_auth.exceptions.PyDataCredentialsError
+        If unable to get valid credentials.
+    """
     # Try to retrieve Application Default Credentials
     credentials, default_project = get_application_default_credentials(scopes)
 
@@ -80,7 +138,14 @@ def get_application_default_credentials(scopes):
 
     if credentials and not credentials.valid:
         request = google.auth.transport.requests.Request()
-        credentials.refresh(request)
+        try:
+            credentials.refresh(request)
+        except google.auth.exceptions.RefreshError:
+            # Sometimes (such as on Travis) google-auth returns GCE
+            # credentials, but fetching the token for those credentials doesn't
+            # actually work. See:
+            # https://github.com/googleapis/google-auth-library-python/issues/287
+            return None, None
 
     return credentials, project
 
@@ -95,17 +160,64 @@ def get_user_credentials(
     """
     Gets user account credentials.
 
-    This method authenticates using user credentials, either loading saved
-    credentials from a file or by going through the OAuth flow.
+    This function authenticates using user credentials, either loading saved
+    credentials from the cache or by going through the OAuth 2.0 flow.
+
+    The default read-write cache attempts to read credentials from a file on
+    disk. If these credentials are not found or are invalid, it begins an
+    OAuth 2.0 flow to get credentials. You'll open a browser window asking
+    for you to authenticate to your Google account using the product name
+    ``PyData Google Auth``. The permissions it requests correspond to the
+    scopes you've provided.
+
+    Additional information on the user credentails authentication mechanism
+    can be found `here
+    <https://developers.google.com/identity/protocols/OAuth2#clientside/>`__.
 
     Parameters
     ----------
-    None
+    scopes : list[str]
+        A list of scopes to use when authenticating to Google APIs. See the
+        `list of OAuth 2.0 scopes for Google APIs
+        <https://developers.google.com/identity/protocols/googlescopes>`_.
+    client_id : str, optional
+        The client secrets to use when prompting for user credentials.
+        Defaults to a client ID associated with pydata-google-auth.
+
+        If you are a tool or library author, you must override the default
+        value with a client ID associated with your project. Per the `Google
+        APIs terms of service <https://developers.google.com/terms/>`_, you
+        must not mask your API client's identity when using Google APIs.
+    client_secret : str, optional
+        The client secrets to use when prompting for user credentials.
+        Defaults to a client secret associated with pydata-google-auth.
+
+        If you are a tool or library author, you must override the default
+        value with a client secret associated with your project. Per the
+        `Google APIs terms of service
+        <https://developers.google.com/terms/>`_, you must not mask your API
+        client's identity when using Google APIs.
+    credentials_cache : pydata_google_auth.cache.CredentialsCache, optional
+        An object responsible for loading and saving user credentials.
+
+        By default, pydata-google-auth reads and writes credentials in
+        ``$HOME/.config/pydata/pydata_google_credentials.json`` or
+        ``$APPDATA/.config/pydata/pydata_google_credentials.json`` on
+        Windows.
+    auth_local_webserver : bool, optional
+        Use a local webserver for the user authentication
+        :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Defaults to
+        ``False``, which requests a token via the console.
 
     Returns
     -------
-    GoogleCredentials : credentials
-        Credentials for the user with BigQuery access.
+    credentials : google.oauth2.credentials.Credentials
+        Credentials for the user, with the requested scopes.
+
+    Raises
+    ------
+    pydata_google_auth.exceptions.PyDataCredentialsError
+        If unable to get valid user credentials.
     """
     # Use None as default for client_id and client_secret so that the values
     # aren't included in the docs. A string of bytes isn't useful for the
@@ -140,7 +252,7 @@ def get_user_credentials(
                 credentials = app_flow.run_console()
         except oauthlib.oauth2.rfc6749.errors.OAuth2Error as exc:
             raise exceptions.PyDataCredentialsError(
-                "Unable to get valid credentials: {0}".format(exc)
+                "Unable to get valid credentials: {}".format(exc)
             )
 
         credentials_cache.save(credentials)

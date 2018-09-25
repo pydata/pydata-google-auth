@@ -7,12 +7,22 @@ API Reference
 
 .. autosummary::
 
-   default
-   get_user_credentials
-   cache
+    default
+    get_user_credentials
+    cache.CredentialsCache
+    cache.READ_WRITE
+    cache.REAUTH
+    cache.NOOP
+    exceptions.PyDataCredentialsError
 
-.. autofunction:: default
-.. autofunction:: get_user_credentials
+.. automodule:: pydata_google_auth
+   :members:
+   :show-inheritance:
+
 .. automodule:: pydata_google_auth.cache
-    :members:
-    :show-inheritance:
+   :members:
+   :show-inheritance:
+
+.. automodule:: pydata_google_auth.exceptions
+   :members:
+   :show-inheritance:

@@ -40,7 +40,7 @@ def _get_default_credentials_path(credentials_dirname, credentials_filename):
 
 
 def _load_user_credentials_from_info(credentials_json):
-    return google.oauth2.credentials.Credentials(
+    credentials = google.oauth2.credentials.Credentials(
         token=credentials_json.get("access_token"),
         refresh_token=credentials_json.get("refresh_token"),
         id_token=credentials_json.get("id_token"),
@@ -49,6 +49,16 @@ def _load_user_credentials_from_info(credentials_json):
         client_secret=credentials_json.get("client_secret"),
         scopes=credentials_json.get("scopes"),
     )
+
+    if credentials and not credentials.valid:
+        request = google.auth.transport.requests.Request()
+        try:
+            credentials.refresh(request)
+        except google.auth.exceptions.RefreshError:
+            # Credentials could be expired or revoked. Try to reauthorize.
+            return None
+
+    return credentials
 
 
 def _load_user_credentials_from_file(credentials_path):
