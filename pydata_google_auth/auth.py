@@ -13,6 +13,7 @@ import oauthlib.oauth2.rfc6749.errors
 import google.auth.transport.requests
 
 from pydata_google_auth import exceptions
+from pydata_google_auth import cache
 
 
 logger = logging.getLogger(__name__)
@@ -21,17 +22,13 @@ CLIENT_ID = (
     "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd" ".apps.googleusercontent.com"
 )
 CLIENT_SECRET = "JSF-iczmzEgbTR-XK-2xaWAc"
-CREDENTIALS_DIRNAME = "pydata"
-CREDENTIALS_FILENAME = "pydata_google_credentials.json"
 
 
 def default(
     scopes,
-    client_id=CLIENT_ID,
-    client_secret=CLIENT_SECRET,
-    credentials_dirname=CREDENTIALS_DIRNAME,
-    credentials_filename=CREDENTIALS_FILENAME,
-    reauth=False,
+    client_id=None,
+    client_secret=None,
+    credentials_cache=cache.READ_WRITE,
     auth_local_webserver=False,
 ):
     # Try to retrieve Application Default Credentials
@@ -44,9 +41,7 @@ def default(
         scopes,
         client_id=client_id,
         client_secret=client_secret,
-        credentials_dirname=credentials_dirname,
-        credentials_filename=credentials_filename,
-        reauth=reauth,
+        credentials_cache=credentials_cache,
         auth_local_webserver=auth_local_webserver,
     )
 
@@ -92,14 +87,13 @@ def get_application_default_credentials(scopes):
 
 def get_user_credentials(
     scopes,
-    client_id=CLIENT_ID,
-    client_secret=CLIENT_SECRET,
-    credentials_dirname=CREDENTIALS_DIRNAME,
-    credentials_filename=CREDENTIALS_FILENAME,
-    reauth=False,
+    client_id=None,
+    client_secret=None,
+    credentials_cache=cache.READ_WRITE,
     auth_local_webserver=False,
 ):
-    """Gets user account credentials.
+    """
+    Gets user account credentials.
 
     This method authenticates using user credentials, either loading saved
     credentials from a file or by going through the OAuth flow.
@@ -113,16 +107,16 @@ def get_user_credentials(
     GoogleCredentials : credentials
         Credentials for the user with BigQuery access.
     """
-    # Use the default credentials location under ~/.config and the
-    # equivalent directory on windows if the user has not specified a
-    # credentials path.
-    credentials_path = get_default_credentials_path(
-        credentials_dirname, credentials_filename
-    )
+    # Use None as default for client_id and client_secret so that the values
+    # aren't included in the docs. A string of bytes isn't useful for the
+    # documentation and might encourage the values to be used outside of this
+    # library.
+    if client_id is None:
+        client_id = CLIENT_ID
+    if client_secret is None:
+        client_secret = CLIENT_SECRET
 
-    credentials = None
-    if not reauth:
-        credentials = load_user_credentials_from_file(credentials_path)
+    credentials = credentials_cache.load()
 
     client_config = {
         "installed": {
@@ -149,100 +143,10 @@ def get_user_credentials(
                 "Unable to get valid credentials: {0}".format(exc)
             )
 
-        save_user_account_credentials(credentials, credentials_path)
+        credentials_cache.save(credentials)
 
     if credentials and not credentials.valid:
         request = google.auth.transport.requests.Request()
         credentials.refresh(request)
 
     return credentials
-
-
-def load_user_credentials_from_info(credentials_json):
-    return google.oauth2.credentials.Credentials(
-        token=credentials_json.get("access_token"),
-        refresh_token=credentials_json.get("refresh_token"),
-        id_token=credentials_json.get("id_token"),
-        token_uri=credentials_json.get("token_uri"),
-        client_id=credentials_json.get("client_id"),
-        client_secret=credentials_json.get("client_secret"),
-        scopes=credentials_json.get("scopes"),
-    )
-
-
-def load_user_credentials_from_file(credentials_path):
-    """
-    Loads user account credentials from a local file.
-
-    .. versionadded 0.2.0
-
-    Parameters
-    ----------
-    None
-
-    Returns
-    -------
-    - GoogleCredentials,
-        If the credentials can loaded. The retrieved credentials should
-        also have access to the project (project_id) on BigQuery.
-    - OR None,
-        If credentials can not be loaded from a file. Or, the retrieved
-        credentials do not have access to the project (project_id)
-        on BigQuery.
-    """
-    try:
-        with open(credentials_path) as credentials_file:
-            credentials_json = json.load(credentials_file)
-    except (IOError, ValueError) as exc:
-        logger.debug(
-            "Error loading credentials from {}: {}".format(credentials_path, str(exc))
-        )
-        return None
-
-    return load_user_credentials_from_info(credentials_json)
-
-
-def get_default_credentials_path(credentials_dirname, credentials_filename):
-    """
-    Gets the default path to the Google user credentials
-
-    .. versionadded 0.3.0
-
-    Returns
-    -------
-    Path to the Google user credentials
-    """
-    if os.name == "nt":
-        config_path = os.environ["APPDATA"]
-    else:
-        config_path = os.path.join(os.path.expanduser("~"), ".config")
-
-    config_path = os.path.join(config_path, credentials_dirname)
-
-    # Create a pydata directory in an application-specific hidden
-    # user folder on the operating system.
-    if not os.path.exists(config_path):
-        os.makedirs(config_path)
-
-    return os.path.join(config_path, credentials_filename)
-
-
-def save_user_account_credentials(credentials, credentials_path):
-    """
-    Saves user account credentials to a local file.
-
-    .. versionadded 0.2.0
-    """
-    try:
-        with open(credentials_path, "w") as credentials_file:
-            credentials_json = {
-                "refresh_token": credentials.refresh_token,
-                "id_token": credentials.id_token,
-                "token_uri": credentials.token_uri,
-                "client_id": credentials.client_id,
-                "client_secret": credentials.client_secret,
-                "scopes": credentials.scopes,
-            }
-            json.dump(credentials_json, credentials_file)
-    except IOError:
-        logger.warning("Unable to save credentials.")

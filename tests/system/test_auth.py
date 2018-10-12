@@ -47,17 +47,29 @@ def test_get_user_credentials_gets_valid_credentials():
     assert credentials.has_scopes(TEST_SCOPES)
 
 
-def test_get_user_credentials_from_file_gets_valid_credentials():
+def test_get_user_credentials_noop_gets_valid_credentials():
     import pydata_google_auth
-    import pydata_google_auth.auth
+    import pydata_google_auth.cache
 
-    # Mock load_user_credentials_from_file to fail, forcing fresh credentials.
-    with mock.patch(
-        "pydata_google_auth.auth.load_user_credentials_from_file", return_value=None
-    ):
-        credentials = pydata_google_auth.get_user_credentials(
-            TEST_SCOPES, auth_local_webserver=True
-        )
+    credentials = pydata_google_auth.get_user_credentials(
+        TEST_SCOPES,
+        credentials_cache=pydata_google_auth.cache.NOOP,
+        auth_local_webserver=True,
+    )
+
+    assert credentials.valid
+    assert credentials.has_scopes(TEST_SCOPES)
+
+
+def test_get_user_credentials_reauth_gets_valid_credentials():
+    import pydata_google_auth
+    import pydata_google_auth.cache
+
+    credentials = pydata_google_auth.get_user_credentials(
+        TEST_SCOPES,
+        credentials_cache=pydata_google_auth.cache.REAUTH,
+        auth_local_webserver=True,
+    )
 
     assert credentials.valid
     assert credentials.has_scopes(TEST_SCOPES)
