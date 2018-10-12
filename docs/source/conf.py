@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# pandas-gbq documentation build configuration file, created by
+# pydata-google-auth documentation build configuration file, created by
 # sphinx-quickstart on Wed Feb  8 10:52:12 2017.
 #
 # This file is execfile()d with the current directory set to its
@@ -36,7 +36,7 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.extlinks",
     "sphinx.ext.todo",
-    "numpydoc",  # used to parse numpy-style docstrings for autodoc
+    "sphinx.ext.napoleon",
     "IPython.sphinxext.ipython_console_highlighting",
     "IPython.sphinxext.ipython_directive",
     "sphinx.ext.intersphinx",
@@ -61,7 +61,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"pandas-gbq"
+project = u"pydata-google-auth"
 copyright = u"2017, PyData Development Team"
 author = u"PyData Development Team"
 
@@ -156,7 +156,7 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
 #
-# html_title = u'pandas-gbq v0.1.0'
+# html_title = u'pydata-google-auth v0.1.0'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #
@@ -256,7 +256,7 @@ html_static_path = ["_static"]
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "pandas-gbqdoc"
+htmlhelp_basename = "pydata-google-authdoc"
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -281,8 +281,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "pandas-gbq.tex",
-        u"pandas-gbq Documentation",
+        "pydata-google-auth.tex",
+        u"pydata-google-auth Documentation",
         u"PyData Development Team",
         "manual",
     )
@@ -325,11 +325,17 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "pandas-gbq", u"pandas-gbq Documentation", [author], 1)]
+man_pages = [(master_doc, "pydata-google-auth", u"pydata-google-auth Documentation", [author], 1)]
 
 # If true, show URL addresses after external links.
 #
 # man_show_urls = False
+
+
+# -- Options for napoleon -------------------------------------------
+
+napoleon_google_docstring = False
+napoleon_numpy_docstring = True
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -340,10 +346,10 @@ man_pages = [(master_doc, "pandas-gbq", u"pandas-gbq Documentation", [author], 1
 texinfo_documents = [
     (
         master_doc,
-        "pandas-gbq",
-        u"pandas-gbq Documentation",
+        "pydata-google-auth",
+        u"pydata-google-auth Documentation",
         author,
-        "pandas-gbq",
+        "pydata-google-auth",
         "One line description of project.",
         "Miscellaneous",
     )
@@ -365,15 +371,15 @@ texinfo_documents = [
 #
 # texinfo_no_detailmenu = False
 
-
 # Configuration for intersphinx:
 intersphinx_mapping = {
     "https://docs.python.org/": None,
     "https://pandas.pydata.org/pandas-docs/stable/": None,
     "https://google-auth.readthedocs.io/en/latest/": None,
+    "https://google-auth-oauthlib.readthedocs.io/en/latest/": None,
 }
 
 extlinks = {
-    "issue": ("https://github.com/pydata/pandas-gbq/issues/%s", "GH#"),
-    "pr": ("https://github.com/pydata/pandas-gbq/pull/%s", "GH#"),
+    "issue": ("https://github.com/pydata/pydata-google-auth/issues/%s", "GH#"),
+    "pr": ("https://github.com/pydata/pydata-google-auth/pull/%s", "GH#"),
 }
