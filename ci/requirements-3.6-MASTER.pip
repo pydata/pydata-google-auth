@@ -3,3 +3,8 @@ google-auth-oauthlib
 git+https://github.com/GoogleCloudPlatform/google-cloud-python.git#egg=version_subpkg&subdirectory=api_core
 git+https://github.com/GoogleCloudPlatform/google-cloud-python.git#egg=version_subpkg&subdirectory=core
 git+https://github.com/GoogleCloudPlatform/google-cloud-python.git#egg=version_subpkg&subdirectory=bigquery
+pytest
+pytest-cov
+codecov
+coverage
+flake8
