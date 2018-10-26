@@ -39,10 +39,13 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Topic :: Scientific/Engineering",
+        "License :: OSI Approved :: BSD License",
     ],
     keywords="data",
     install_requires=INSTALL_REQUIRES,
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     test_suite="tests",
+    data_files=[("", ["LICENSE.txt"])],
 )
