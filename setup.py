@@ -47,5 +47,4 @@ setup(
     install_requires=INSTALL_REQUIRES,
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     test_suite="tests",
-    data_files=[("", ["LICENSE.txt"])],
 )
