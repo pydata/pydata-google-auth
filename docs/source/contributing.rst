@@ -277,7 +277,7 @@ multiple Python environments. First, install nox.
 
 .. code-block:: shell
 
-    $ pip install --upgrade nox-automation
+    $ pip install --upgrade nox
 
 To run tests in all versions of Python, run `nox` from the repository's root
 directory.
