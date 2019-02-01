@@ -1,9 +1,29 @@
 Changelog
 =========
 
+.. _changelog-0.1.2:
+
+0.1.2 / (2019-02-01)
+--------------------
+
+Bug Fixes
+^^^^^^^^^
+
+- Don't write to the filesystem at module import time. This fixes an issue
+  where the module could not be imported on systems where the file system is
+  unwriteable. (:issue:`10`, :issue:`11`)
+
+.. _changelog-0.1.1:
+
+0.1.1 / (2018-10-26)
+--------------------
+
+- Add LICENSE.txt to package manifest.
+- Document privacy policy.
+
 .. _changelog-0.1.0:
 
-0.1.0 / (Unreleased)
+0.1.0 / (2018-10-23)
 --------------------
 
 - Add ``cache`` module for configuring caching behaviors. (:issue:`1`)
