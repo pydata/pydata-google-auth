@@ -10,7 +10,8 @@ import shutil
 import nox
 
 
-latest_python = "3.6"
+latest_python = "3.7"
+python_versions = ["2.7", "3.6", "3.7"]
 
 
 @nox.session(python=latest_python)
@@ -35,7 +36,7 @@ def blacken(session):
     session.run("black", "pydata_google_auth", "tests", "docs", "noxfile.py")
 
 
-@nox.session
+@nox.session(python=python_versions)
 def unit(session):
     session.install("mock", "pyfakefs", "pytest", "pytest-cov")
     session.install("-e", ".")
@@ -51,14 +52,14 @@ def unit(session):
     )
 
 
-@nox.session
-def cover(session, python=latest_python):
+@nox.session(python=latest_python)
+def cover(session):
     session.install("coverage", "pytest-cov")
     session.run("coverage", "report", "--show-missing", "--fail-under=40")
     session.run("coverage", "erase")
 
 
-@nox.session
+@nox.session(python=python_versions)
 def system(session):
     session.install("mock", "pyfakefs", "pytest", "pytest-cov")
     session.install("-e", ".")
@@ -80,7 +81,7 @@ def system(session):
     )
 
 
-@nox.session(python="3.6")
+@nox.session(python=latest_python)
 def docs(session):
     """Build the docs."""
 
