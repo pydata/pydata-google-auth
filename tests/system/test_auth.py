@@ -1,15 +1,11 @@
 """System tests for fetching Google API credentials."""
 
-import google.auth
-
 try:
     import mock
 except ImportError:  # pragma: NO COVER
     from unittest import mock
 
 from google.auth.exceptions import DefaultCredentialsError
-import pytest
-import requests
 
 
 TEST_SCOPES = ["https://www.googleapis.com/auth/cloud-platform"]

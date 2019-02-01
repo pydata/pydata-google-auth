@@ -1,6 +1,5 @@
 google-auth
 google-auth-oauthlib
-google-cloud-bigquery==0.32.0
 pyfakefs
 pytest
 pytest-cov
