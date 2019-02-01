@@ -3,7 +3,7 @@ include README.rst
 include LICENSE.txt
 include setup.py
 
-graft pandas_gbq
+graft pydata_google_auth
 
 global-exclude *.so
 global-exclude *.pyd
@@ -15,4 +15,4 @@ global-exclude .DS_Store
 global-exclude *.png
 
 include versioneer.py
-include pandas_gbq/_version.py
+include pydata_google_auth/_version.py

@@ -24,8 +24,7 @@ Data library and tool authors can use the :func:`pydata_google_auth.default`
 function to get `Application Default Credentials
 <https://google-auth.readthedocs.io/en/latest/reference/google.auth.html#google.auth.default>`_
 and fallback to user credentials when no valid Application Default
-Credentials are found. This behavior was refactored from the `pandas-gbq
-library <https://pandas-gbq.readthedocs.io/>`_.
+Credentials are found.
 
 When wrapping the :func:`pydata_google_auth.default` method for use in your
 tool or library, please provide your own client ID and client secret. Enable

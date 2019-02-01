@@ -41,8 +41,8 @@ def get_config():
     cfg.VCS = "git"
     cfg.style = "pep440"
     cfg.tag_prefix = ""
-    cfg.parentdir_prefix = "pandas_gbq/_version.py"
-    cfg.versionfile_source = "pandas_gbq/_version.py"
+    cfg.parentdir_prefix = "pydata_google_auth/_version.py"
+    cfg.versionfile_source = "pydata_google_auth/_version.py"
     cfg.verbose = False
     return cfg
 

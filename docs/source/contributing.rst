@@ -153,7 +153,6 @@ Create a new conda environment and install the necessary dependencies
 .. code-block:: shell
 
    $ conda create -n my-env --channel conda-forge  \
-         pandas \
          google-auth-oauthlib \
          google-api-python-client \
          google-auth-httplib2
