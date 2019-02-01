@@ -21,10 +21,11 @@ def lint(session):
     serious code quality issues.
     """
 
-    session.install("flake8")
+    session.install("black", "flake8")
     session.install("-e", ".")
     session.run("flake8", "pydata_google_auth")
     session.run("flake8", "tests")
+    session.run("black", "--check", ".")
 
 
 @nox.session(python=latest_python)
@@ -33,7 +34,7 @@ def blacken(session):
     Format code to uniform standard.
     """
     session.install("black")
-    session.run("black", "pydata_google_auth", "tests", "docs", "noxfile.py")
+    session.run("black", ".")
 
 
 @nox.session(python=python_versions)

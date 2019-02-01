@@ -105,10 +105,10 @@ want to clone your fork to your machine::
 This creates the directory `pydata-google-auth-yourname` and connects your repository to
 the upstream (main project) *pydata-google-auth* repository.
 
-The testing suite will run automatically on Travis-CI once your pull request is submitted.
+The testing suite will run automatically on CircleCI once your pull request is submitted.
 However, if you wish to run the test suite on a branch prior to submitting the pull request,
-then Travis-CI needs to be hooked up to your GitHub repository.  Instructions for doing so
-are `here <http://about.travis-ci.org/docs/user/getting-started/>`__.
+then CircleCI needs to be hooked up to your GitHub repository.  Instructions for doing so
+are `here <https://circleci.com/docs/2.0/getting-started/>`__..
 
 Creating a branch
 -----------------
@@ -195,7 +195,7 @@ Code standards
 --------------
 
 Writing good code is not just about what you write. It is also about *how* you
-write it. During testing on Travis-CI, several tools will be run to check your
+write it. During testing on CircleCI, several tools will be run to check your
 code for stylistic errors. Generating any warnings will cause the test to fail.
 Thus, good style is a requirement for submitting code to *pydata-google-auth*.
 
@@ -214,10 +214,12 @@ the more common ``PEP8`` issues:
   - we restrict line-length to 79 characters to promote readability
   - passing arguments should have spaces after commas, e.g. ``foo(arg1, arg2, kw1='bar')``
 
-Travis-CI will run the `flake8 <http://pypi.python.org/pypi/flake8>`_ tool
-and report any stylistic errors in your code. Therefore, it is helpful before
-submitting code to run the check yourself on the diff::
+CircleCI will run the `flake8 <http://pypi.python.org/pypi/flake8>`_ tool and
+the `'black' code formatting tool <https://black.readthedocs.io/>`_ to report
+any stylistic errors in your code. Therefore, it is helpful before submitting
+code to run the check yourself on the diff::
 
+   black .
    git diff master | flake8 --diff
 
 Backwards Compatibility
@@ -281,48 +283,6 @@ multiple Python environments. First, install nox.
 
 To run tests in all versions of Python, run `nox` from the repository's root
 directory.
-
-.. _contributing.integration_tests:
-
-Running Google APIs Integration Tests
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-You will need to create a Google APIs service account private key in JSON
-format in order to run Google APIs integration tests on your local machine
-and on Travis-CI. The first step is to create a `service account
-<https://console.cloud.google.com/iam-admin/serviceaccounts/>`__.
-
-To run the integration tests locally, set the following environment variables
-before running ``pytest``:
-
-#. ``GOOGLE_APPLICATION_CREDENTIALS`` with the value being the *path* to
-   the JSON key that you downloaded for your service account.
-
-Integration tests are skipped in pull requests because the credentials that
-are required for running Google APIs integration tests are
-`encrypted <https://docs.travis-ci.com/user/encrypting-files/>`__
-on Travis-CI and are only accessible from the pydata/pydata-google-auth repository. The
-credentials won't be available on forks of pydata-google-auth. Here are the steps to run
-integration tests on a forked repository:
-
-#. Go to `Travis CI <https://travis-ci.org/>`__ and sign in with your GitHub
-   account.
-#. Click on the ``+`` icon next to the ``My Repositories`` list and enable
-   Travis builds for your fork.
-#. Click on the gear icon to edit your travis build, and add two environment
-   variables:
-
-   - ``SERVICE_ACCOUNT_KEY`` with the value being the *contents* of the JSON
-     key that you downloaded for your service account. Use single quotes around
-     your JSON key to ensure that it is treated as a string.
-
-   For both environment variables, keep the "Display value in build log" option
-   DISABLED. These variables contain sensitive data and you do not want their
-   contents being exposed in build logs.
-#. Your branch should be tested automatically once it is pushed. You can check
-   the status by visiting your Travis branches page which exists at the
-   following location: https://travis-ci.org/your-user-name/pydata-google-auth/branches .
-   Click on a build job for your branch.
 
 Documenting your code
 ---------------------
@@ -480,7 +440,7 @@ updated.  Pushing them to GitHub again is done by::
     git push -f origin shiny-new-feature
 
 This will automatically update your pull request with the latest code and restart the
-Travis-CI tests.
+CircleCI tests.
 
 Delete your merged branch (optional)
 ------------------------------------

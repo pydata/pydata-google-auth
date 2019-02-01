@@ -52,8 +52,8 @@ authenticate to Google APIs with user credentials.
 
 See the `pydata-google-auth documentation <https://pydata-google-auth.readthedocs.io/>`_ for more details.
 
-.. |Build Status| image:: https://travis-ci.org/pydata/pydata-google-auth.svg?branch=master
-   :target: https://travis-ci.org/pydata/pydata-google-auth
+.. |Build Status| image:: https://circleci.com/gh/pydata/pydata-google-auth/tree/master.svg?style=svg
+   :target: https://circleci.com/gh/pydata/pydata-google-auth/tree/master
 .. |Version Status| image:: https://img.shields.io/pypi/v/pydata-google-auth.svg
    :target: https://pypi.python.org/pypi/pydata-google-auth/
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/pydata/pydata-google-auth.svg
