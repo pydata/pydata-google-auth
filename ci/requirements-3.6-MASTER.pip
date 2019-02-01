@@ -1,8 +1,0 @@
-google-auth
-google-auth-oauthlib
-pyfakefs
-pytest
-pytest-cov
-codecov
-coverage
-flake8
