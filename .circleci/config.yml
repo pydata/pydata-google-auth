@@ -38,3 +38,13 @@ jobs:
     steps:
       - checkout
       - run: nox -s lint
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - "unit-2.7"
+      - "unit-3.5"
+      - "unit-3.6"
+      - "unit-3.7"
+      - lint
