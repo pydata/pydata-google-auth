@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import json
-import os.path
-
 try:
     from unittest import mock
 except ImportError:  # pragma: NO COVER

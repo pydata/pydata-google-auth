@@ -1,9 +1,6 @@
 """Private module for fetching Google API credentials."""
 
-import json
 import logging
-import os
-import os.path
 
 import google.auth
 import google.auth.exceptions
@@ -18,9 +15,7 @@ from pydata_google_auth import cache
 
 logger = logging.getLogger(__name__)
 
-CLIENT_ID = (
-    "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd.apps.googleusercontent.com"
-)
+CLIENT_ID = "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd.apps.googleusercontent.com"
 CLIENT_SECRET = "JSF-iczmzEgbTR-XK-2xaWAc"
 
 

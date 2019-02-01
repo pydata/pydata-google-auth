@@ -2,7 +2,6 @@ google-auth
 google-auth-oauthlib
 PyCrypto
 mock
-google-cloud-bigquery
 pyfakefs
 pytest
 pytest-cov
