@@ -74,7 +74,7 @@ def system(session):
         os.path.join(".", "tests", "system"),
         "--quiet",
         "--cov=pydata_google_auth",
-        "--cov=tests.unit",
+        "--cov=tests.system",
         "--cov-report",
         "xml:/tmp/pytest-cov.xml",
         *additional_args
