@@ -3,4 +3,5 @@ google-cloud-bigquery
 nox-automation
 pandas
 pytest
+pyfakefs
 setuptools

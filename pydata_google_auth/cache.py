@@ -1,5 +1,6 @@
 """Caching implementations for reading and writing user credentials."""
 
+import errno
 import json
 import logging
 import os
@@ -30,12 +31,6 @@ def _get_default_credentials_path(credentials_dirname, credentials_filename):
         config_path = os.path.join(os.path.expanduser("~"), ".config")
 
     config_path = os.path.join(config_path, credentials_dirname)
-
-    # Create a pydata directory in an application-specific hidden
-    # user folder on the operating system.
-    if not os.path.exists(config_path):
-        os.makedirs(config_path)
-
     return os.path.join(config_path, credentials_filename)
 
 
@@ -95,6 +90,18 @@ def _save_user_account_credentials(credentials, credentials_path):
     """
     Saves user account credentials to a local file.
     """
+
+    # Create the direcory if it doesn't exist.
+    # https://stackoverflow.com/a/12517490/101923
+    config_dir = os.path.dirname(credentials_path)
+    if not os.path.exists(config_dir):
+        try:
+            os.makedirs(config_dir)
+        except OSError as exc:  # Guard against race condition.
+            if exc.errno != errno.EEXIST:
+                logger.warning("Unable to create credentials directory.")
+                return
+
     try:
         with open(credentials_path, "w") as credentials_file:
             credentials_json = {
