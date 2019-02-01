@@ -19,7 +19,7 @@ from pydata_google_auth import cache
 logger = logging.getLogger(__name__)
 
 CLIENT_ID = (
-    "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd" ".apps.googleusercontent.com"
+    "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd.apps.googleusercontent.com"
 )
 CLIENT_SECRET = "JSF-iczmzEgbTR-XK-2xaWAc"
 
