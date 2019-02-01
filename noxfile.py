@@ -11,7 +11,7 @@ import nox
 
 
 latest_python = "3.7"
-python_versions = ["2.7", "3.6", "3.7"]
+python_versions = ["2.7", "3.5", "3.6", "3.7"]
 
 
 @nox.session(python=latest_python)
