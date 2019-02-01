@@ -13,11 +13,11 @@
 
 *   Upload to test PyPI
 
-       twine upload --repository testpypi dist/*
+        twine upload --repository testpypi dist/*
 
 *   Try out test PyPI package
 
-       pip install --upgrade --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pandas-gbq
+        pip install --upgrade --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pydata-google-auth
 
 *   Upload to PyPI
 

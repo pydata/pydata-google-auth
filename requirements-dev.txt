@@ -1,7 +1,5 @@
 flake8
-google-cloud-bigquery
 nox
-pandas
 pytest
 pyfakefs
 setuptools

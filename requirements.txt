@@ -1,5 +1,2 @@
-pandas
 google-auth
 google-auth-oauthlib
-google-cloud-bigquery
-tqdm

@@ -1,5 +1,5 @@
 # Contributing
 
-See the [contributing guide in the pandas-gbq
-docs](http://pandas-gbq.readthedocs.io/en/latest/contributing.html).
+See the [contributing guide in the pydata-google-auth
+docs](http://pydata-google-auth.readthedocs.io/en/latest/contributing.html).
 

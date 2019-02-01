@@ -1,8 +1,0 @@
-google-auth==1.4.1
-google-auth-oauthlib==0.0.1
-pyfakefs
-pytest
-pytest-cov
-codecov
-coverage
-flake8
