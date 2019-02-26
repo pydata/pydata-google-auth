@@ -1,6 +1,19 @@
 Changelog
 =========
 
+.. _changelog-0.1.3:
+
+0.1.3 / TBD
+-----------
+
+Bug Fixes
+^^^^^^^^^
+
+- Respect the ``dirname`` and ``filename`` arguments to the
+  :class:`~pydata_google_auth.cache.ReadWriteCredentialsCache` and
+  :class:`~pydata_google_auth.cache.WriteOnlyCredentialsCache` constructors.
+  (:issue:`16`, :issue:`17`)
+
 .. _changelog-0.1.2:
 
 0.1.2 / (2019-02-01)

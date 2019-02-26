@@ -54,3 +54,31 @@ def test__save_user_account_credentials_wo_directory(module_under_test, fs):
     with open(path) as fp:
         serialized_data = json.load(fp)
     assert serialized_data["refresh_token"] == "refresh_token"
+
+
+def test_ReadWriteCredentialsCache_sets_path(module_under_test):
+    """ReadWriteCredentialsCache ctor should respect dirname and filename.
+
+    See: https://github.com/pydata/pydata-google-auth/issues/16
+    """
+    cache = module_under_test.ReadWriteCredentialsCache(
+        dirname="dirtest", filename="filetest.json"
+    )
+    path = os.path.normpath(cache._path)
+    parts = path.split(os.sep)
+    assert parts[-2] == "dirtest"
+    assert parts[-1] == "filetest.json"
+
+
+def test_WriteOnlyCredentialsCache_sets_path(module_under_test):
+    """ReadWriteCredentialsCache ctor should respect dirname and filename.
+
+    See: https://github.com/pydata/pydata-google-auth/issues/16
+    """
+    cache = module_under_test.WriteOnlyCredentialsCache(
+        dirname="dirtest", filename="filetest.json"
+    )
+    path = os.path.normpath(cache._path)
+    parts = path.split(os.sep)
+    assert parts[-2] == "dirtest"
+    assert parts[-1] == "filetest.json"
