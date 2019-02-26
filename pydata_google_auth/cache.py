@@ -169,7 +169,7 @@ class ReadWriteCredentialsCache(CredentialsCache):
 
     def __init__(self, dirname=_DIRNAME, filename=_FILENAME):
         super(ReadWriteCredentialsCache, self).__init__()
-        self._path = _get_default_credentials_path(_DIRNAME, _FILENAME)
+        self._path = _get_default_credentials_path(dirname, filename)
 
     def load(self):
         """
@@ -215,7 +215,7 @@ class WriteOnlyCredentialsCache(CredentialsCache):
 
     def __init__(self, dirname=_DIRNAME, filename=_FILENAME):
         super(WriteOnlyCredentialsCache, self).__init__()
-        self._path = _get_default_credentials_path(_DIRNAME, _FILENAME)
+        self._path = _get_default_credentials_path(dirname, filename)
 
     def save(self, credentials):
         """
