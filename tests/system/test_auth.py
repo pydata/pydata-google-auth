@@ -14,7 +14,7 @@ TEST_SCOPES = ["https://www.googleapis.com/auth/cloud-platform"]
 def test_default_gets_valid_credentials():
     import pydata_google_auth
 
-    credentials, _ = pydata_google_auth.default(TEST_SCOPES, auth_local_webserver=True)
+    credentials, _ = pydata_google_auth.default(TEST_SCOPES, use_local_webserver=True)
     assert credentials.valid
     assert credentials.has_scopes(TEST_SCOPES)
 
@@ -25,7 +25,7 @@ def test_default_gets_user_credentials():
     # Mock google.auth.default to fail, forcing user credentials.
     with mock.patch("google.auth.default", side_effect=DefaultCredentialsError()):
         credentials, _ = pydata_google_auth.default(
-            TEST_SCOPES, auth_local_webserver=True
+            TEST_SCOPES, use_local_webserver=True
         )
 
     assert credentials.valid
@@ -36,7 +36,7 @@ def test_get_user_credentials_gets_valid_credentials():
     import pydata_google_auth
 
     credentials = pydata_google_auth.get_user_credentials(
-        TEST_SCOPES, auth_local_webserver=True
+        TEST_SCOPES, use_local_webserver=True
     )
 
     assert credentials.valid
@@ -50,7 +50,7 @@ def test_get_user_credentials_noop_gets_valid_credentials():
     credentials = pydata_google_auth.get_user_credentials(
         TEST_SCOPES,
         credentials_cache=pydata_google_auth.cache.NOOP,
-        auth_local_webserver=True,
+        use_local_webserver=True,
     )
 
     assert credentials.valid
@@ -64,7 +64,7 @@ def test_get_user_credentials_reauth_gets_valid_credentials():
     credentials = pydata_google_auth.get_user_credentials(
         TEST_SCOPES,
         credentials_cache=pydata_google_auth.cache.REAUTH,
-        auth_local_webserver=True,
+        use_local_webserver=True,
     )
 
     assert credentials.valid
