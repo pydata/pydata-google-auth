@@ -1,6 +1,14 @@
 Changelog
 =========
 
+.. _changelog-0.2.0:
+
+0.2.0 / TBD
+-----------
+
+- Deprecates ``auth_local_webserver`` argument in favor of
+  ``use_local_webserver`` argument (:issue:`20`).
+
 .. _changelog-0.1.3:
 
 0.1.3 / (2019-02-26)
