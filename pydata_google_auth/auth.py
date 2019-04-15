@@ -1,6 +1,7 @@
 """Private module for fetching Google API credentials."""
 
 import logging
+import warnings
 
 import google.auth
 import google.auth.exceptions
@@ -15,6 +16,11 @@ from pydata_google_auth import cache
 
 logger = logging.getLogger(__name__)
 
+AUTH_LOCAL_WEBSERVER_DEPRECATION = (
+    "auth_local_webserver is deprecated and will be removed in "
+    "a future version. Use use_local_webserver instead."
+)
+
 CLIENT_ID = "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd.apps.googleusercontent.com"
 CLIENT_SECRET = "JSF-iczmzEgbTR-XK-2xaWAc"
 
@@ -24,7 +30,8 @@ def default(
     client_id=None,
     client_secret=None,
     credentials_cache=cache.READ_WRITE,
-    auth_local_webserver=False,
+    use_local_webserver=False,
+    auth_local_webserver=None,
 ):
     """
     Get credentials and default project for accessing Google APIs.
@@ -64,10 +71,12 @@ def default(
         ``$HOME/.config/pydata/pydata_google_credentials.json`` or
         ``$APPDATA/.config/pydata/pydata_google_credentials.json`` on
         Windows.
-    auth_local_webserver : bool, optional
+    use_local_webserver : bool, optional
         Use a local webserver for the user authentication
         :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Defaults to
         ``False``, which requests a token via the console.
+    auth_local_webserver : deprecated
+        Use the ``use_local_webserver`` parameter instead.
 
     Returns
     -------
@@ -95,7 +104,7 @@ def default(
         client_id=client_id,
         client_secret=client_secret,
         credentials_cache=credentials_cache,
-        auth_local_webserver=auth_local_webserver,
+        use_local_webserver=use_local_webserver,
     )
 
     if not credentials or not credentials.valid:
@@ -150,7 +159,8 @@ def get_user_credentials(
     client_id=None,
     client_secret=None,
     credentials_cache=cache.READ_WRITE,
-    auth_local_webserver=False,
+    use_local_webserver=False,
+    auth_local_webserver=None,
 ):
     """
     Gets user account credentials.
@@ -199,10 +209,12 @@ def get_user_credentials(
         ``$HOME/.config/pydata/pydata_google_credentials.json`` or
         ``$APPDATA/.config/pydata/pydata_google_credentials.json`` on
         Windows.
-    auth_local_webserver : bool, optional
+    use_local_webserver : bool, optional
         Use a local webserver for the user authentication
         :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Defaults to
         ``False``, which requests a token via the console.
+    auth_local_webserver : deprecated
+        Use the ``use_local_webserver`` parameter instead.
 
     Returns
     -------
@@ -214,6 +226,10 @@ def get_user_credentials(
     pydata_google_auth.exceptions.PyDataCredentialsError
         If unable to get valid user credentials.
     """
+    if auth_local_webserver is not None:
+        warnings.warn(AUTH_LOCAL_WEBSERVER_DEPRECATION, FutureWarning, stacklevel=2)
+        use_local_webserver = auth_local_webserver
+
     # Use None as default for client_id and client_secret so that the values
     # aren't included in the docs. A string of bytes isn't useful for the
     # documentation and might encourage the values to be used outside of this
@@ -241,7 +257,7 @@ def get_user_credentials(
         )
 
         try:
-            if auth_local_webserver:
+            if use_local_webserver:
                 credentials = app_flow.run_local_server()
             else:
                 credentials = app_flow.run_console()
