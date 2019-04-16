@@ -111,6 +111,10 @@ def _save_user_account_credentials(credentials, credentials_path):
                 "client_id": credentials.client_id,
                 "client_secret": credentials.client_secret,
                 "scopes": credentials.scopes,
+                # Required for Application Default Credentials to detect the
+                # credentials type. See:
+                # https://github.com/pydata/pydata-google-auth/issues/22
+                "type": "authorized_user",
             }
             json.dump(credentials_json, credentials_file)
     except IOError:
