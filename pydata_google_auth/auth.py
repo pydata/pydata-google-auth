@@ -16,11 +16,6 @@ from pydata_google_auth import cache
 
 logger = logging.getLogger(__name__)
 
-AUTH_LOCAL_WEBSERVER_DEPRECATION = (
-    "auth_local_webserver is deprecated and will be removed in "
-    "a future version. Use use_local_webserver instead."
-)
-
 CLIENT_ID = "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd.apps.googleusercontent.com"
 CLIENT_SECRET = "JSF-iczmzEgbTR-XK-2xaWAc"
 
@@ -227,7 +222,6 @@ def get_user_credentials(
         If unable to get valid user credentials.
     """
     if auth_local_webserver is not None:
-        warnings.warn(AUTH_LOCAL_WEBSERVER_DEPRECATION, FutureWarning, stacklevel=2)
         use_local_webserver = auth_local_webserver
 
     # Use None as default for client_id and client_secret so that the values
