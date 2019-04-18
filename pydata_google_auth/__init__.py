@@ -1,5 +1,6 @@
 from .auth import default
 from .auth import get_user_credentials
+from .auth import save_user_credentials
 from ._version import get_versions
 
 versions = get_versions()
@@ -11,4 +12,10 @@ __git_revision__ = versions["full-revisionid"]
 This package provides helpers for fetching Google API credentials.
 """
 
-__all__ = ["__version__", "__git_revision__", "default", "get_user_credentials"]
+__all__ = [
+    "__version__",
+    "__git_revision__",
+    "default",
+    "get_user_credentials",
+    "save_user_credentials",
+]

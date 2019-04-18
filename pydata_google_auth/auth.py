@@ -266,3 +266,84 @@ def get_user_credentials(
         credentials.refresh(request)
 
     return credentials
+
+
+def save_user_credentials(
+    scopes, path, client_id=None, client_secret=None, use_local_webserver=False
+):
+    """
+    Gets user account credentials and saves them to a JSON file at ``path``.
+
+    This function authenticates using user credentials by going through the
+    OAuth 2.0 flow.
+
+    Parameters
+    ----------
+
+    scopes : list[str]
+        A list of scopes to use when authenticating to Google APIs. See the
+        `list of OAuth 2.0 scopes for Google APIs
+        <https://developers.google.com/identity/protocols/googlescopes>`_.
+    path : str
+        Path to save credentials JSON file.
+    client_id : str, optional
+        The client secrets to use when prompting for user credentials.
+        Defaults to a client ID associated with pydata-google-auth.
+
+        If you are a tool or library author, you must override the default
+        value with a client ID associated with your project. Per the `Google
+        APIs terms of service <https://developers.google.com/terms/>`_, you
+        must not mask your API client's identity when using Google APIs.
+    client_secret : str, optional
+        The client secrets to use when prompting for user credentials.
+        Defaults to a client secret associated with pydata-google-auth.
+
+        If you are a tool or library author, you must override the default
+        value with a client secret associated with your project. Per the
+        `Google APIs terms of service
+        <https://developers.google.com/terms/>`_, you must not mask your API
+        client's identity when using Google APIs.
+    use_local_webserver : bool, optional
+        Use a local webserver for the user authentication
+        :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Defaults to
+        ``False``, which requests a token via the console.
+
+    Returns
+    -------
+
+    None
+
+    Raises
+    ------
+    pydata_google_auth.exceptions.PyDataCredentialsError
+        If unable to get valid user credentials.
+
+    Examples
+    --------
+
+    Get credentials for Google Cloud Platform and save them to
+    ``/home/username/keys/google-credentials.json``.
+
+    .. code-block:: python
+
+       pydata_google_auth.save_user_credentials(
+           ["https://www.googleapis.com/auth/cloud-platform"],
+           "/home/username/keys/google-credentials.json",
+           use_local_webserver=True,
+       )
+
+    Set the ``GOOGLE_APPLICATION_CREDENTIALS`` environment variable to use
+    these credentials with Google Application Default Credentials.
+
+    .. code-block:: bash
+
+       export GOOGLE_APPLICATION_CREDENTIALS='/home/username/keys/google-credentials.json'
+    """
+    credentials = get_user_credentials(
+        scopes,
+        client_id=client_id,
+        client_secret=client_secret,
+        credentials_cache=cache.NOOP,
+        use_local_webserver=use_local_webserver,
+    )
+    cache._save_user_account_credentials(credentials, path)
