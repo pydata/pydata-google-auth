@@ -1,7 +1,6 @@
 """Private module for fetching Google API credentials."""
 
 import logging
-import warnings
 
 import google.auth
 import google.auth.exceptions
