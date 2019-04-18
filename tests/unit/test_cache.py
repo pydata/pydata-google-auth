@@ -55,6 +55,11 @@ def test__save_user_account_credentials_wo_directory(module_under_test, fs):
         serialized_data = json.load(fp)
     assert serialized_data["refresh_token"] == "refresh_token"
 
+    # Set the type so that the cached credentials file can be used as
+    # application default credentials. See:
+    # https://github.com/pydata/pydata-google-auth/issues/22
+    assert serialized_data["type"] == "authorized_user"
+
 
 def test_ReadWriteCredentialsCache_sets_path(module_under_test):
     """ReadWriteCredentialsCache ctor should respect dirname and filename.
