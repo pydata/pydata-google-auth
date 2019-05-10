@@ -17,6 +17,8 @@ logger = logging.getLogger(__name__)
 
 CLIENT_ID = "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd.apps.googleusercontent.com"
 CLIENT_SECRET = "JSF-iczmzEgbTR-XK-2xaWAc"
+GOOGLE_AUTH_URI = "https://accounts.google.com/o/oauth2/auth"
+GOOGLE_TOKEN_URI = "https://oauth2.googleapis.com/token"
 
 
 def default(
@@ -239,8 +241,8 @@ def get_user_credentials(
             "client_id": client_id,
             "client_secret": client_secret,
             "redirect_uris": ["urn:ietf:wg:oauth:2.0:oob"],
-            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-            "token_uri": "https://accounts.google.com/o/oauth2/token",
+            "auth_uri": GOOGLE_AUTH_URI,
+            "token_uri": GOOGLE_TOKEN_URI,
         }
     }
 
