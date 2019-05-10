@@ -1,0 +1,3 @@
+setuptools
+google-auth
+google-auth-oauthlib

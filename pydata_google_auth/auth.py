@@ -352,3 +352,46 @@ def save_user_credentials(
         use_local_webserver=use_local_webserver,
     )
     cache._save_user_account_credentials(credentials, path)
+
+
+def load_user_credentials(path):
+    """
+    Gets user account credentials from JSON file at ``path``.
+
+    Parameters
+    ----------
+    path : str
+        Path to credentials JSON file.
+
+    Returns
+    -------
+
+    google.auth.credentials.Credentials
+
+    Raises
+    ------
+    pydata_google_auth.exceptions.PyDataCredentialsError
+        If unable to load user credentials.
+
+    Examples
+    --------
+
+    Load credentials and use them to construct a BigQuery client.
+
+    .. code-block:: python
+
+       import pydata_google_auth
+       import google.cloud.bigquery
+
+       credentials = pydata_google_auth.load_user_credentials(
+           "/home/username/keys/google-credentials.json",
+       )
+       client = google.cloud.bigquery.BigQueryClient(
+           credentials=credentials,
+           project="my-project-id"
+       )
+    """
+    credentials = cache._load_user_credentials_from_file(path)
+    if not credentials:
+        raise exceptions.PyDataCredentialsError("Could not load credentials.")
+    return credentials
