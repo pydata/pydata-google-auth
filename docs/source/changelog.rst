@@ -10,6 +10,7 @@ Changelog
   ``use_local_webserver`` argument (:issue:`20`).
 - Adds :func:`pydata_google_auth.save_user_credentials` function to get user
   credentials and then save them to a specified JSON path. (:issue:`22`)
+- Update OAuth2 token endpoint to latest URI from Google. (:issue:`27`)
 
 .. _changelog-0.1.3:
 
