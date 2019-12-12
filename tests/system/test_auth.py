@@ -16,7 +16,6 @@ def test_default_gets_valid_credentials():
 
     credentials, _ = pydata_google_auth.default(TEST_SCOPES, use_local_webserver=True)
     assert credentials.valid
-    assert credentials.has_scopes(TEST_SCOPES)
 
 
 def test_default_gets_user_credentials():
@@ -29,7 +28,6 @@ def test_default_gets_user_credentials():
         )
 
     assert credentials.valid
-    assert credentials.has_scopes(TEST_SCOPES)
 
 
 def test_get_user_credentials_gets_valid_credentials():
@@ -40,7 +38,6 @@ def test_get_user_credentials_gets_valid_credentials():
     )
 
     assert credentials.valid
-    assert credentials.has_scopes(TEST_SCOPES)
 
 
 def test_get_user_credentials_noop_gets_valid_credentials():
