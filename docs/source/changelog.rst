@@ -3,14 +3,24 @@ Changelog
 
 .. _changelog-0.2.0:
 
-0.2.0 / TBD
------------
+0.2.0 / (2019-12-12)
+--------------------
 
-- Deprecates ``auth_local_webserver`` argument in favor of
+- **Deprecate** ``auth_local_webserver`` argument in favor of
   ``use_local_webserver`` argument (:issue:`20`).
+
+New Features
+^^^^^^^^^^^^^
+
 - Adds :func:`pydata_google_auth.save_user_credentials` function to get user
   credentials and then save them to a specified JSON path. (:issue:`22`)
+
+Bug Fixes
+^^^^^^^^^
+
 - Update OAuth2 token endpoint to latest URI from Google. (:issue:`27`)
+- Don't raise error when the ``APPDATA`` environment variable isn't set on
+  Windows. (:issue:`29`)
 
 .. _changelog-0.1.3:
 
