@@ -25,9 +25,11 @@ def _get_default_credentials_path(credentials_dirname, credentials_filename):
     str
         Path to the Google user credentials
     """
+    config_path = None
+
     if os.name == "nt":
-        config_path = os.environ["APPDATA"]
-    else:
+        config_path = os.getenv("APPDATA")
+    if not config_path:
         config_path = os.path.join(os.path.expanduser("~"), ".config")
 
     config_path = os.path.join(config_path, credentials_dirname)

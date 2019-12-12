@@ -34,6 +34,19 @@ def test_import_unwriteable_fs(module_under_test, monkeypatch):
     assert module_under_test.NOOP is not None
 
 
+def test__get_default_credentials_path_windows_wo_appdata(
+    module_under_test, monkeypatch
+):
+    # Ensure default path returns something sensible on Windows, even if
+    # APPDATA is not set. See:
+    # https://github.com/pydata/pydata-google-auth/issues/29
+    monkeypatch.setattr(os, "name", "nt")
+    monkeypatch.delenv("APPDATA", raising=False)
+
+    creds_path = module_under_test._get_default_credentials_path("dirname", "filename")
+    assert creds_path is not None
+
+
 def test__save_user_account_credentials_wo_directory(module_under_test, fs):
     """Directories should be created if they don't exist."""
 
