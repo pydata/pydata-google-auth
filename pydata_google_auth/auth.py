@@ -89,6 +89,9 @@ def default(
     pydata_google_auth.exceptions.PyDataCredentialsError
         If unable to get valid credentials.
     """
+    if auth_local_webserver is not None:
+        use_local_webserver = auth_local_webserver
+
     # Try to retrieve Application Default Credentials
     credentials, default_project = get_application_default_credentials(scopes)
 

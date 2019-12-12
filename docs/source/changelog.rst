@@ -1,6 +1,14 @@
 Changelog
 =========
 
+.. _changelog-0.2.1:
+
+0.2.1 / (2019-12-12)
+--------------------
+
+- Re-enable ``auth_local_webserver`` in ``default`` method. Show warning,
+  rather than fallback to console.
+
 .. _changelog-0.2.0:
 
 0.2.0 / (2019-12-12)
