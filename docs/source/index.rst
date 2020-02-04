@@ -22,6 +22,7 @@ Contents:
 
    install.rst
    intro.rst
+   cli.rst
    api.rst
    contributing.rst
    changelog.rst

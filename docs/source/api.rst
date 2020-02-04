@@ -9,6 +9,7 @@ API Reference
 
     default
     get_user_credentials
+    load_user_credentials
     save_user_credentials
     cache.CredentialsCache
     cache.READ_WRITE

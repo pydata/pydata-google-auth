@@ -1,5 +1,6 @@
 from .auth import default
 from .auth import get_user_credentials
+from .auth import load_user_credentials
 from .auth import save_user_credentials
 from ._version import get_versions
 
@@ -17,5 +18,6 @@ __all__ = [
     "__git_revision__",
     "default",
     "get_user_credentials",
+    "load_user_credentials",
     "save_user_credentials",
 ]
