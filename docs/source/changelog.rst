@@ -1,6 +1,14 @@
 Changelog
 =========
 
+.. _changelog-0.3.0:
+
+0.3.0 / (2020-02-04)
+--------------------
+
+- Add ``python -m pydata_google_auth`` CLI for working with user credentials.
+  (:issue:`28`)
+
 .. _changelog-0.2.1:
 
 0.2.1 / (2019-12-12)
