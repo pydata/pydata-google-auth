@@ -9,12 +9,6 @@ Welcome to pypdata-google-auth's documentation!
 The :mod:`pydata_google_auth` module provides a wrapper to authenticate to
 Google APIs, such as Google BigQuery.
 
-.. warning::
-
-   To use this module, you will need a valid BigQuery account. Refer to the
-   `BigQuery Documentation <https://cloud.google.com/bigquery/what-is-bigquery>`__
-   for details on the service itself.
-
 Contents:
 
 .. toctree::

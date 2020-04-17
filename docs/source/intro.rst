@@ -7,6 +7,13 @@ pydata-google-auth wraps the `google-auth
 to get and cache user credentials for accessing the Google APIs from
 locally-installed data tools and libraries.
 
+.. warning::
+
+   To use this module, you will need a Google account and developer project.
+   Follow the `Using the BigQuery sandbox
+   <https://cloud.google.com/bigquery/docs/sandbox>`_ instructions to get
+   started with big data on Google Cloud without a credit card.
+
 See the `Google Cloud Platform authentication guide
 <https://cloud.google.com/docs/authentication/>`_ for best practices on
 authentication in production server contexts.
