@@ -29,7 +29,7 @@ setup(
     author_email="pydata@googlegroups.com",
     url="https://github.com/pydata/pydata-google-auth",
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
         "Intended Audience :: Science/Research",
         "Operating System :: OS Independent",
@@ -40,6 +40,7 @@ setup(
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Topic :: Scientific/Engineering",
         "License :: OSI Approved :: BSD License",
     ],

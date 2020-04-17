@@ -1,6 +1,15 @@
 Changelog
 =========
 
+.. _changelog-1.0.0:
+
+1.0.0 / (2020-04-20)
+--------------------
+
+- Mark package as 1.0, generally available.
+- Update introduction with link to instructions on creating a Google Cloud
+  project. (:issue:`18`)
+
 .. _changelog-0.3.0:
 
 0.3.0 / (2020-02-04)
