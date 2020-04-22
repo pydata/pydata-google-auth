@@ -56,7 +56,7 @@ def test_run_local_server_calls_flow(monkeypatch, module_under_test):
         google_auth_oauthlib.flow.InstalledAppFlow, instance=True
     )
     module_under_test.run_local_server(mock_flow)
-    mock_flow.run_local_server.assert_called_once()
+    mock_flow.run_local_server.assert_called_once_with(host="localhost", port=8080)
 
 
 def test_run_local_server_raises_connectionerror(monkeypatch, module_under_test):
