@@ -11,6 +11,7 @@ import google.auth.transport.requests
 
 from pydata_google_auth import exceptions
 from pydata_google_auth import cache
+from pydata_google_auth import _webserver
 
 
 logger = logging.getLogger(__name__)
@@ -256,7 +257,7 @@ def get_user_credentials(
 
         try:
             if use_local_webserver:
-                credentials = app_flow.run_local_server()
+                credentials = _webserver.run_local_server(app_flow)
             else:
                 credentials = app_flow.run_console()
         except oauthlib.oauth2.rfc6749.errors.OAuth2Error as exc:
