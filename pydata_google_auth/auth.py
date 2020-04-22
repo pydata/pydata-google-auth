@@ -70,7 +70,9 @@ def default(
         Windows.
     use_local_webserver : bool, optional
         Use a local webserver for the user authentication
-        :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Defaults to
+        :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Binds a
+        webserver to an open port on ``localhost`` between 8080 and 8089,
+        inclusive, to receive authentication token. If not set, defaults to
         ``False``, which requests a token via the console.
     auth_local_webserver : deprecated
         Use the ``use_local_webserver`` parameter instead.
@@ -211,7 +213,9 @@ def get_user_credentials(
         Windows.
     use_local_webserver : bool, optional
         Use a local webserver for the user authentication
-        :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Defaults to
+        :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Binds a
+        webserver to an open port on ``localhost`` between 8080 and 8089,
+        inclusive, to receive authentication token. If not set, defaults to
         ``False``, which requests a token via the console.
     auth_local_webserver : deprecated
         Use the ``use_local_webserver`` parameter instead.
@@ -311,7 +315,9 @@ def save_user_credentials(
         client's identity when using Google APIs.
     use_local_webserver : bool, optional
         Use a local webserver for the user authentication
-        :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Defaults to
+        :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Binds a
+        webserver to an open port on ``localhost`` between 8080 and 8089,
+        inclusive, to receive authentication token. If not set, defaults to
         ``False``, which requests a token via the console.
 
     Returns

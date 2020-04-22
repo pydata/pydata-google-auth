@@ -31,8 +31,9 @@ LOGIN_CLIENT_SECRET_HELP = LOGIN_CLIENT_ID_HELP_TEMPLATE.format(
 )
 LOGIN_USE_LOCAL_WEBSERVER_HELP = (
     "Use a local webserver for the user authentication. This starts "
-    "a webserver on localhost, which allows the browser to pass a token "
-    "directly to the program."
+    "a webserver on localhost with a port between 8080 and 8089, "
+    "inclusive, which allows the browser to pass a token directly to the "
+    "program."
 )
 
 PRINT_TOKEN_HELP = "Load a credentials JSON file and print an access token."
