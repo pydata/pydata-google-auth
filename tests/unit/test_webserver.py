@@ -10,6 +10,8 @@ except ImportError:  # pragma: NO COVER
 import google_auth_oauthlib.flow
 import pytest
 
+from pydata_google_auth import exceptions
+
 
 @pytest.fixture
 def module_under_test():
@@ -66,7 +68,7 @@ def test_run_local_server_raises_connectionerror(monkeypatch, module_under_test)
         google_auth_oauthlib.flow.InstalledAppFlow, instance=True
     )
 
-    with pytest.raises(ConnectionError):
+    with pytest.raises(exceptions.PyDataConnectionError):
         module_under_test.run_local_server(mock_flow)
 
     mock_flow.run_local_server.assert_not_called()

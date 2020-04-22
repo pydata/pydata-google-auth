@@ -3,6 +3,8 @@
 import socket
 from contextlib import closing
 
+from pydata_google_auth import exceptions
+
 
 LOCALHOST = "localhost"
 DEFAULT_PORTS_TO_TRY = 100
@@ -77,11 +79,11 @@ def run_local_server(app_flow):
 
     Raises
     ------
-    ConnectionError
+    pydata_google_auth.exceptions.PyDataConnectionError
         If no open port can be found in the range from 8080 to 8089,
         inclusive.
     """
     port = find_open_port()
     if not port:
-        raise ConnectionError("Could not find open port.")
+        raise exceptions.PyDataConnectionError("Could not find open port.")
     return app_flow.run_local_server(host=LOCALHOST, port=port)
