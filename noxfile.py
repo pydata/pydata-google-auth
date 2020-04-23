@@ -56,7 +56,7 @@ def unit(session):
 @nox.session(python=latest_python)
 def cover(session):
     session.install("coverage", "pytest-cov")
-    session.run("coverage", "report", "--show-missing", "--fail-under=40")
+    session.run("coverage", "report", "--show-missing", "--fail-under=50")
     session.run("coverage", "erase")
 
 

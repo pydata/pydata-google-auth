@@ -11,6 +11,7 @@ import google.auth.transport.requests
 
 from pydata_google_auth import exceptions
 from pydata_google_auth import cache
+from pydata_google_auth import _webserver
 
 
 logger = logging.getLogger(__name__)
@@ -69,7 +70,9 @@ def default(
         Windows.
     use_local_webserver : bool, optional
         Use a local webserver for the user authentication
-        :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Defaults to
+        :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Binds a
+        webserver to an open port on ``localhost`` between 8080 and 8089,
+        inclusive, to receive authentication token. If not set, defaults to
         ``False``, which requests a token via the console.
     auth_local_webserver : deprecated
         Use the ``use_local_webserver`` parameter instead.
@@ -210,7 +213,9 @@ def get_user_credentials(
         Windows.
     use_local_webserver : bool, optional
         Use a local webserver for the user authentication
-        :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Defaults to
+        :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Binds a
+        webserver to an open port on ``localhost`` between 8080 and 8089,
+        inclusive, to receive authentication token. If not set, defaults to
         ``False``, which requests a token via the console.
     auth_local_webserver : deprecated
         Use the ``use_local_webserver`` parameter instead.
@@ -256,7 +261,7 @@ def get_user_credentials(
 
         try:
             if use_local_webserver:
-                credentials = app_flow.run_local_server()
+                credentials = _webserver.run_local_server(app_flow)
             else:
                 credentials = app_flow.run_console()
         except oauthlib.oauth2.rfc6749.errors.OAuth2Error as exc:
@@ -310,7 +315,9 @@ def save_user_credentials(
         client's identity when using Google APIs.
     use_local_webserver : bool, optional
         Use a local webserver for the user authentication
-        :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Defaults to
+        :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Binds a
+        webserver to an open port on ``localhost`` between 8080 and 8089,
+        inclusive, to receive authentication token. If not set, defaults to
         ``False``, which requests a token via the console.
 
     Returns
