@@ -3,8 +3,8 @@ Changelog
 
 .. _changelog-1.1.0:
 
-1.1.0 / TBD
------------
+1.1.0 / (2020-04-23)
+--------------------
 
 - Try a range of ports between 8080 and 8090 when ``use_local_webserver`` is
   ``True``. (:issue:`35`)
