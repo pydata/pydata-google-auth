@@ -402,3 +402,47 @@ def load_user_credentials(path):
     if not credentials:
         raise exceptions.PyDataCredentialsError("Could not load credentials.")
     return credentials
+
+
+def load_service_account_credentials(path):
+    """
+    Gets service account credentials from JSON file at ``path``.
+
+    Parameters
+    ----------
+    path : str
+        Path to credentials JSON file.
+
+    Returns
+    -------
+
+    google.oauth2.service_account.Credentials
+
+    Raises
+    ------
+    pydata_google_auth.exceptions.PyDataCredentialsError
+        If unable to load service credentials.
+
+    Examples
+    --------
+
+    Load credentials and use them to construct a BigQuery client.
+
+    .. code-block:: python
+
+       import pydata_google_auth
+       import google.cloud.bigquery
+
+       credentials = pydata_google_auth.load_service_account_credentials(
+           "/home/username/keys/google-service-account-credentials.json",
+       )
+       client = google.cloud.bigquery.BigQueryClient(
+           credentials=credentials,
+           project=credentials.project_id
+       )
+    """
+
+    credentials = cache._load_service_account_credentials_from_file(path)
+    if not credentials:
+        raise exceptions.PyDataCredentialsError("Could not load credentials.")
+    return credentials

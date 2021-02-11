@@ -2,6 +2,7 @@ from .auth import default
 from .auth import get_user_credentials
 from .auth import load_user_credentials
 from .auth import save_user_credentials
+from .auth import load_service_account_credentials
 from ._version import get_versions
 
 versions = get_versions()
@@ -20,4 +21,5 @@ __all__ = [
     "get_user_credentials",
     "load_user_credentials",
     "save_user_credentials",
+    "load_service_account_credentials",
 ]

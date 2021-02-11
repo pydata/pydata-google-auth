@@ -7,6 +7,7 @@ import os
 import os.path
 
 import google.oauth2.credentials
+from google.oauth2 import service_account
 
 
 logger = logging.getLogger(__name__)
@@ -121,6 +122,34 @@ def _save_user_account_credentials(credentials, credentials_path):
             json.dump(credentials_json, credentials_file)
     except IOError:
         logger.warning("Unable to save credentials.")
+
+
+def _load_service_account_credentials_from_file(credentials_path):
+    try:
+        with open(credentials_path) as credentials_file:
+            credentials_json = json.load(credentials_file)
+    except (IOError, ValueError) as exc:
+        logger.debug(
+            "Error loading credentials from {}: {}".format(credentials_path, str(exc))
+        )
+        return None
+
+    return _load_service_account_credentials_from_info(credentials_json)
+
+
+def _load_service_account_credentials_from_info(credentials_json):
+    credentials = service_account.Credentials.from_service_account_info(
+        credentials_json, scopes=credentials_json.get("scopes")
+    )
+    if not credentials.valid:
+        request = google.auth.transport.requests.Request()
+        try:
+            credentials.refresh(request)
+        except google.auth.exceptions.RefreshError:
+            # Credentials could be expired or revoked.
+            return None
+
+    return credentials
 
 
 class CredentialsCache(object):
