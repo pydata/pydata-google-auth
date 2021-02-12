@@ -124,7 +124,7 @@ def _save_user_account_credentials(credentials, credentials_path):
         logger.warning("Unable to save credentials.")
 
 
-def _load_service_account_credentials_from_file(credentials_path):
+def _load_service_account_credentials_from_file(credentials_path, **kwargs):
     try:
         with open(credentials_path) as credentials_file:
             credentials_json = json.load(credentials_file)
@@ -134,12 +134,12 @@ def _load_service_account_credentials_from_file(credentials_path):
         )
         return None
 
-    return _load_service_account_credentials_from_info(credentials_json)
+    return _load_service_account_credentials_from_info(credentials_json, **kwargs)
 
 
-def _load_service_account_credentials_from_info(credentials_json):
+def _load_service_account_credentials_from_info(credentials_json, **kwargs):
     credentials = service_account.Credentials.from_service_account_info(
-        credentials_json, scopes=credentials_json.get("scopes")
+        credentials_json, **kwargs
     )
     if not credentials.valid:
         request = google.auth.transport.requests.Request()

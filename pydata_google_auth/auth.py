@@ -404,7 +404,7 @@ def load_user_credentials(path):
     return credentials
 
 
-def load_service_account_credentials(path):
+def load_service_account_credentials(path, scopes=None):
     """
     Gets service account credentials from JSON file at ``path``.
 
@@ -412,6 +412,10 @@ def load_service_account_credentials(path):
     ----------
     path : str
         Path to credentials JSON file.
+    scopes : list[str], optional
+        A list of scopes to use when authenticating to Google APIs. See the
+        `list of OAuth 2.0 scopes for Google APIs
+        <https://developers.google.com/identity/protocols/googlescopes>`_.
 
     Returns
     -------
@@ -442,7 +446,7 @@ def load_service_account_credentials(path):
        )
     """
 
-    credentials = cache._load_service_account_credentials_from_file(path)
+    credentials = cache._load_service_account_credentials_from_file(path, scopes=scopes)
     if not credentials:
         raise exceptions.PyDataCredentialsError("Could not load credentials.")
     return credentials
