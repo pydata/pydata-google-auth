@@ -1,8 +1,10 @@
 Changelog
 =========
 
-Unreleased / TBD
-----------------
+.. _changelog-1.2.0:
+
+1.2.0 / (2020-04-21)
+--------------------
 
 - Adds :func:`pydata_google_auth.load_service_account_credentials` function to
   get service account credentials from the specified JSON path. (:issue:`39`)

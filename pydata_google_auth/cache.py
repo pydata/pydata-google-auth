@@ -145,8 +145,9 @@ def _load_service_account_credentials_from_info(credentials_json, **kwargs):
         request = google.auth.transport.requests.Request()
         try:
             credentials.refresh(request)
-        except google.auth.exceptions.RefreshError:
+        except google.auth.exceptions.RefreshError as exc:
             # Credentials could be expired or revoked.
+            logger.debug("Error refreshing credentials: {}".format(str(exc)))
             return None
 
     return credentials
