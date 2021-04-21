@@ -11,6 +11,7 @@ API Reference
     get_user_credentials
     load_user_credentials
     save_user_credentials
+    load_service_account_credentials
     cache.CredentialsCache
     cache.READ_WRITE
     cache.REAUTH

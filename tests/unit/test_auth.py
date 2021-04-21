@@ -10,6 +10,7 @@ import google.auth.credentials
 import google.oauth2.credentials
 import pytest
 
+from google.oauth2 import service_account
 from pydata_google_auth import exceptions
 
 
@@ -56,6 +57,33 @@ def test_default_loads_user_credentials(monkeypatch, module_under_test):
     assert credentials is mock_user_credentials
 
 
+class FakeCredentials(object):
+    @property
+    def valid(self):
+        return True
+
+
+def test_load_service_account_credentials(monkeypatch, tmp_path, module_under_test):
+    creds_path = str(tmp_path / "creds.json")
+    with open(creds_path, "w") as stream:
+        stream.write("{}")
+
+    fake_creds = FakeCredentials()
+    mock_service = mock.create_autospec(service_account.Credentials)
+    mock_service.from_service_account_info.return_value = fake_creds
+    monkeypatch.setattr(service_account, "Credentials", mock_service)
+
+    creds = module_under_test.load_service_account_credentials(creds_path)
+    assert creds is fake_creds
+
+
 def test_load_user_credentials_raises_when_file_doesnt_exist(module_under_test):
     with pytest.raises(exceptions.PyDataCredentialsError):
         module_under_test.load_user_credentials("path/not/found.json")
+
+
+def test_load_service_account_credentials_raises_when_file_doesnt_exist(
+    module_under_test,
+):
+    with pytest.raises(exceptions.PyDataCredentialsError):
+        module_under_test.load_service_account_credentials("path/not/found.json")
