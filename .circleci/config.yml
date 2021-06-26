@@ -11,13 +11,6 @@ jobs:
       - checkout
       - run: nox -s unit-2.7
 
-  "unit-3.5":
-    docker:
-      - image: thekevjames/nox
-    steps:
-      - checkout
-      - run: nox -s unit-3.5
-
   "unit-3.6":
     docker:
       - image: thekevjames/nox
@@ -30,7 +23,21 @@ jobs:
       - image: thekevjames/nox
     steps:
       - checkout
-      - run: nox -s unit-3.7 cover
+      - run: nox -s unit-3.7
+
+  "unit-3.8":
+    docker:
+      - image: thekevjames/nox
+    steps:
+      - checkout
+      - run: nox -s unit-3.8
+
+  "unit-3.9":
+    docker:
+      - image: thekevjames/nox
+    steps:
+      - checkout
+      - run: nox -s unit-3.9 cover
 
   "lint":
     docker:
@@ -44,7 +51,8 @@ workflows:
   build:
     jobs:
       - "unit-2.7"
-      - "unit-3.5"
       - "unit-3.6"
       - "unit-3.7"
+      - "unit-3.8"
+      - "unit-3.9"
       - lint
