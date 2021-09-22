@@ -177,7 +177,7 @@ def get_user_credentials(
     ``PyData Google Auth``. The permissions it requests correspond to the
     scopes you've provided.
 
-    Additional information on the user credentails authentication mechanism
+    Additional information on the user credentials authentication mechanism
     can be found `here
     <https://developers.google.com/identity/protocols/OAuth2#clientside/>`__.
 
