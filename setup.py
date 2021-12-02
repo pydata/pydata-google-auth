@@ -16,7 +16,13 @@ def readme():
         return f.read()
 
 
-INSTALL_REQUIRES = ["setuptools", "google-auth", "google-auth-oauthlib"]
+INSTALL_REQUIRES = [
+    "setuptools",
+    "google-auth >=1.25.0, <2.0dev;  python_version<'3.0'",
+    "google-auth; python_version>='3.6'",
+    "google-auth-oauthlib <0.4.2dev; python_version<'3.0'",
+    "google-auth-oauthlib; python_version>='3.6'",
+]
 
 setup(
     name=NAME,
@@ -42,6 +48,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Topic :: Scientific/Engineering",
         "License :: OSI Approved :: BSD License",
     ],

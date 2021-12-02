@@ -10,8 +10,8 @@ import shutil
 import nox
 
 
-latest_python = "3.9"
-python_versions = ["2.7", "3.6", "3.7", "3.8", "3.9"]
+latest_python = "3.10"
+python_versions = ["2.7", "3.6", "3.7", "3.8", "3.9", "3.10"]
 
 
 @nox.session(python=latest_python)
