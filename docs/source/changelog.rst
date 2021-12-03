@@ -1,9 +1,17 @@
 Changelog
 =========
 
+.. _changelog-1.3.0:
+
+1.3.0 / (2021-12-03)
+--------------------
+
+- Adds support for Python 3.10. (:issue:`51`)
+- Fixes typo in documentation. (:issue:`44`)
+
 .. _changelog-1.2.0:
 
-1.2.0 / (2020-04-21)
+1.2.0 / (2021-04-21)
 --------------------
 
 - Adds :func:`pydata_google_auth.load_service_account_credentials` function to
