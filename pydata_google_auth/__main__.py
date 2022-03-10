@@ -55,7 +55,7 @@ def login(args):
         args.destination,
         client_id=args.client_id,
         client_secret=args.client_secret,
-        use_local_webserver=args.use_local_webserver,
+        use_local_webserver=not args.nouse_local_webserver,
     )
 
 
@@ -80,7 +80,12 @@ login_parser.add_argument(
 login_parser.add_argument("--client_id", help=LOGIN_CLIENT_ID_HELP)
 login_parser.add_argument("--client_secret", help=LOGIN_CLIENT_SECRET_HELP)
 login_parser.add_argument(
-    "--use_local_webserver", action="store_true", help=LOGIN_USE_LOCAL_WEBSERVER_HELP
+    "--use_local_webserver",
+    action="store_true",
+    help="Ignored. Defaults to true. To disable, set --nouse_local_webserver option.",
+)
+login_parser.add_argument(
+    "--nouse_local_webserver", action="store_true", help=LOGIN_USE_LOCAL_WEBSERVER_HELP
 )
 
 print_token_parser = subparsers.add_parser(
