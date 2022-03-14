@@ -4,7 +4,7 @@
 
 *   and push to github
 
-        git push upstream master --tags
+        git push upstream main --tags
 
 *   Build the package
 

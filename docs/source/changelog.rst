@@ -3,12 +3,14 @@ Changelog
 
 .. _changelog-1.4.0:
 
-1.4.0 / (TBD)
--------------
+1.4.0 / (2022-03-14)
+--------------------
 
-- Set ``use_local_webserver`` to ``True`` because of `Google's "out of band"
-  authentication flow deprecation
+- Default ``use_local_webserver`` to ``True``.  Google has deprecated the
+  ``use_local_webserver = False`` `"out of band" (copy-paste) flow
   <https://developers.googleblog.com/2022/02/making-oauth-flows-safer.html?m=1#disallowed-oob>`_.
+  The ``use_local_webserver = False`` option is planned to stop working in
+  October 2022.
 
 .. _changelog-1.3.0:
 
