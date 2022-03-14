@@ -27,7 +27,7 @@ def default(
     client_id=None,
     client_secret=None,
     credentials_cache=cache.READ_WRITE,
-    use_local_webserver=False,
+    use_local_webserver=True,
     auth_local_webserver=None,
 ):
     """
@@ -161,7 +161,7 @@ def get_user_credentials(
     client_id=None,
     client_secret=None,
     credentials_cache=cache.READ_WRITE,
-    use_local_webserver=False,
+    use_local_webserver=True,
     auth_local_webserver=None,
 ):
     """
@@ -279,7 +279,7 @@ def get_user_credentials(
 
 
 def save_user_credentials(
-    scopes, path, client_id=None, client_secret=None, use_local_webserver=False
+    scopes, path, client_id=None, client_secret=None, use_local_webserver=True
 ):
     """
     Gets user account credentials and saves them to a JSON file at ``path``.

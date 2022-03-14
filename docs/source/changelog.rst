@@ -1,6 +1,15 @@
 Changelog
 =========
 
+.. _changelog-1.4.0:
+
+1.4.0 / (TBD)
+-------------
+
+- Set ``use_local_webserver`` to ``True`` because of `Google's "out of band"
+  authentication flow deprecation
+  <https://developers.googleblog.com/2022/02/making-oauth-flows-safer.html?m=1#disallowed-oob>`_.
+
 .. _changelog-1.3.0:
 
 1.3.0 / (2021-12-03)
