@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 CLIENT_ID = "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd.apps.googleusercontent.com"
 CLIENT_SECRET = "JSF-iczmzEgbTR-XK-2xaWAc"
+
 GOOGLE_AUTH_URI = "https://accounts.google.com/o/oauth2/auth"
 GOOGLE_TOKEN_URI = "https://oauth2.googleapis.com/token"
 
@@ -29,6 +30,7 @@ def default(
     credentials_cache=cache.READ_WRITE,
     use_local_webserver=True,
     auth_local_webserver=None,
+    redirect_uri=None,
 ):
     """
     Get credentials and default project for accessing Google APIs.
@@ -107,6 +109,7 @@ def default(
         client_secret=client_secret,
         credentials_cache=credentials_cache,
         use_local_webserver=use_local_webserver,
+        redirect_uri=redirect_uri,
     )
 
     if not credentials or not credentials.valid:
@@ -163,6 +166,7 @@ def get_user_credentials(
     credentials_cache=cache.READ_WRITE,
     use_local_webserver=True,
     auth_local_webserver=None,
+    redirect_uri=None,
 ):
     """
     Gets user account credentials.
@@ -248,7 +252,7 @@ def get_user_credentials(
         "installed": {
             "client_id": client_id,
             "client_secret": client_secret,
-            "redirect_uris": ["urn:ietf:wg:oauth:2.0:oob"],
+            "redirect_uris": [redirect_uri],
             "auth_uri": GOOGLE_AUTH_URI,
             "token_uri": GOOGLE_TOKEN_URI,
         }
@@ -263,7 +267,7 @@ def get_user_credentials(
             if use_local_webserver:
                 credentials = _webserver.run_local_server(app_flow)
             else:
-                credentials = app_flow.run_console()
+                credentials = app_flow.run_console(redirect_uri=redirect_uri)
         except oauthlib.oauth2.rfc6749.errors.OAuth2Error as exc:
             raise exceptions.PyDataCredentialsError(
                 "Unable to get valid credentials: {}".format(exc)
