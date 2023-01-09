@@ -102,7 +102,8 @@ def default(
         Use the ``use_local_webserver`` parameter instead.
     redirect_uri : str, optional
         Redirect URIs are endpoints to which the OAuth 2.0 server can send
-        responses. They may be used in situations such as:
+        responses. They may be used in situations such as
+
         * an organization has an org specific authentication endpoint
         * an organization can not use an endpoint directly because of
           constraints on access to the internet (i.e. when running code on a
@@ -254,11 +255,13 @@ def get_user_credentials(
         Use the ``use_local_webserver`` parameter instead.
     redirect_uri : str, optional
         Redirect URIs are endpoints to which the OAuth 2.0 server can send
-        responses. They may be used in situations such as:
+        responses. They may be used in situations such as
+
         * an organization has an org specific authentication endpoint
         * an organization can not use an endpoint directly because of
           constraints on access to the internet (i.e. when running code on a
           remotely hosted device).
+
     Returns
     -------
     credentials : google.oauth2.credentials.Credentials
