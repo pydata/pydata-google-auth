@@ -22,6 +22,28 @@ CLIENT_SECRET = "JSF-iczmzEgbTR-XK-2xaWAc"
 GOOGLE_AUTH_URI = "https://accounts.google.com/o/oauth2/auth"
 GOOGLE_TOKEN_URI = "https://oauth2.googleapis.com/token"
 
+def _run_webapp(flow,
+    redirect_uri=None,
+    **kwargs):
+
+    if redirect_uri:
+        flow.redirect_uri = redirect_uri
+    else:
+        flow.redirect_uri = flow._OOB_REDIRECT_URI
+
+    auth_url, _ = flow.authorization_url(**kwargs)
+    authorization_prompt_message = "Please visit this URL to authorize this application: {url}"
+
+    if authorization_prompt_message:
+        print(authorization_prompt_message.format(url=auth_url))
+
+    authorization_code_message = "Enter the authorization code: "
+
+    code = input(authorization_code_message)
+    flow.fetch_token(code=code)
+    return flow.credentials
+
+
 
 def default(
     scopes,
@@ -271,26 +293,6 @@ def get_user_credentials(
         }
     }
 
-    def run_webapp(self,
-        redirect_uri=None,
-        **kwargs):
-
-        if redirect_uri:
-            self.redirect_uri = redirect_uri
-        else:
-            self.redirect_uri = self._OOB_REDIRECT_URI
-
-        auth_url, _ = self.authorization_url(**kwargs)
-        authorization_prompt_message = "Please visit this URL to authorize this application: {url}"
-
-        if authorization_prompt_message:
-            print(authorization_prompt_message.format(url=auth_url))
-
-        authorization_code_message = "Enter the authorization code: "
-
-        code = input(authorization_code_message)
-        self.fetch_token(code=code)
-        return self.credentials
 
     if credentials is None:
         app_flow = flow.InstalledAppFlow.from_client_config(
@@ -301,8 +303,7 @@ def get_user_credentials(
             if use_local_webserver:
                 credentials = _webserver.run_local_server(app_flow)
             else:
-                flow.InstalledAppFlow.run_webapp = run_webapp
-                credentials = app_flow.run_webapp(redirect_uri=redirect_uri)
+                credentials = _run_webapp(app_flow, redirect_uri=redirect_uri)
                 
 
         except oauthlib.oauth2.rfc6749.errors.OAuth2Error as exc:
