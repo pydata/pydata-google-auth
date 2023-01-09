@@ -78,6 +78,13 @@ def default(
         ``False``, which requests a token via the console.
     auth_local_webserver : deprecated
         Use the ``use_local_webserver`` parameter instead.
+    redirect_uri : str, optional
+        Redirect URIs are endpoints to which the OAuth 2.0 server can send
+        responses. They may be used in situations such as:
+        * an organization has an org specific authentication endpoint
+        * an organization can not use an endpoint directly because of
+          constraints on access to the internet (i.e. when running code on a
+          remotely hosted device).
 
     Returns
     -------
@@ -223,7 +230,13 @@ def get_user_credentials(
         ``False``, which requests a token via the console.
     auth_local_webserver : deprecated
         Use the ``use_local_webserver`` parameter instead.
-
+    redirect_uri : str, optional
+        Redirect URIs are endpoints to which the OAuth 2.0 server can send
+        responses. They may be used in situations such as:
+        * an organization has an org specific authentication endpoint
+        * an organization can not use an endpoint directly because of 
+          constraints on access to the internet (i.e. when running code on a
+          remotely hosted device).
     Returns
     -------
     credentials : google.oauth2.credentials.Credentials
@@ -252,11 +265,32 @@ def get_user_credentials(
         "installed": {
             "client_id": client_id,
             "client_secret": client_secret,
-            "redirect_uris": [redirect_uri],
+            "redirect_uris": [redirect_uri, "urn:ietf:wg:oauth:2.0:oob"],
             "auth_uri": GOOGLE_AUTH_URI,
             "token_uri": GOOGLE_TOKEN_URI,
         }
     }
+
+    def run_webapp(self,
+        redirect_uri=None,
+        **kwargs):
+
+        if redirect_uri:
+            self.redirect_uri = redirect_uri
+        else:
+            self.redirect_uri = self._OOB_REDIRECT_URI
+
+        auth_url, _ = self.authorization_url(**kwargs)
+        authorization_prompt_message = "Please visit this URL to authorize this application: {url}"
+
+        if authorization_prompt_message:
+            print(authorization_prompt_message.format(url=auth_url))
+
+        authorization_code_message = "Enter the authorization code: "
+
+        code = input(authorization_code_message)
+        self.fetch_token(code=code)
+        return self.credentials
 
     if credentials is None:
         app_flow = flow.InstalledAppFlow.from_client_config(
@@ -267,7 +301,10 @@ def get_user_credentials(
             if use_local_webserver:
                 credentials = _webserver.run_local_server(app_flow)
             else:
-                credentials = app_flow.run_console(redirect_uri=redirect_uri)
+                flow.InstalledAppFlow.run_webapp = run_webapp
+                credentials = app_flow.run_webapp(redirect_uri=redirect_uri)
+                
+
         except oauthlib.oauth2.rfc6749.errors.OAuth2Error as exc:
             raise exceptions.PyDataCredentialsError(
                 "Unable to get valid credentials: {}".format(exc)
