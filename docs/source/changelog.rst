@@ -1,6 +1,13 @@
 Changelog
 =========
 
+.. _changelog-1.5.0:
+
+1.5.0 / (2023-01-09)
+--------------------
+
+- Adds ability to provide redirect uri. (:issue:`58`)
+
 .. _changelog-1.4.0:
 
 1.4.0 / (2022-03-14)
