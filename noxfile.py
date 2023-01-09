@@ -191,7 +191,7 @@ def cover(session):
 def docs(session):
     """Build the docs for this library."""
 
-    session.install("sphinx", "sphinx_rtd_theme", "ipython")
+    session.install("sphinx==4.0.2", "sphinx_rtd_theme", "ipython")
     session.install("-e", ".")
 
     shutil.rmtree(os.path.join("docs", "source", "_build"), ignore_errors=True)
