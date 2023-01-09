@@ -18,8 +18,31 @@ logger = logging.getLogger(__name__)
 
 CLIENT_ID = "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd.apps.googleusercontent.com"
 CLIENT_SECRET = "JSF-iczmzEgbTR-XK-2xaWAc"
+
 GOOGLE_AUTH_URI = "https://accounts.google.com/o/oauth2/auth"
 GOOGLE_TOKEN_URI = "https://oauth2.googleapis.com/token"
+
+
+def _run_webapp(flow, redirect_uri=None, **kwargs):
+
+    if redirect_uri:
+        flow.redirect_uri = redirect_uri
+    else:
+        flow.redirect_uri = flow._OOB_REDIRECT_URI
+
+    auth_url, _ = flow.authorization_url(**kwargs)
+    authorization_prompt_message = (
+        "Please visit this URL to authorize this application: {url}"
+    )
+
+    if authorization_prompt_message:
+        print(authorization_prompt_message.format(url=auth_url))
+
+    authorization_code_message = "Enter the authorization code: "
+
+    code = input(authorization_code_message)
+    flow.fetch_token(code=code)
+    return flow.credentials
 
 
 def default(
@@ -29,6 +52,7 @@ def default(
     credentials_cache=cache.READ_WRITE,
     use_local_webserver=True,
     auth_local_webserver=None,
+    redirect_uri=None,
 ):
     """
     Get credentials and default project for accessing Google APIs.
@@ -76,6 +100,13 @@ def default(
         ``False``, which requests a token via the console.
     auth_local_webserver : deprecated
         Use the ``use_local_webserver`` parameter instead.
+    redirect_uri : str, optional
+        Redirect URIs are endpoints to which the OAuth 2.0 server can send
+        responses. They may be used in situations such as:
+        * an organization has an org specific authentication endpoint
+        * an organization can not use an endpoint directly because of
+          constraints on access to the internet (i.e. when running code on a
+          remotely hosted device).
 
     Returns
     -------
@@ -107,6 +138,7 @@ def default(
         client_secret=client_secret,
         credentials_cache=credentials_cache,
         use_local_webserver=use_local_webserver,
+        redirect_uri=redirect_uri,
     )
 
     if not credentials or not credentials.valid:
@@ -163,6 +195,7 @@ def get_user_credentials(
     credentials_cache=cache.READ_WRITE,
     use_local_webserver=True,
     auth_local_webserver=None,
+    redirect_uri=None,
 ):
     """
     Gets user account credentials.
@@ -219,7 +252,13 @@ def get_user_credentials(
         ``False``, which requests a token via the console.
     auth_local_webserver : deprecated
         Use the ``use_local_webserver`` parameter instead.
-
+    redirect_uri : str, optional
+        Redirect URIs are endpoints to which the OAuth 2.0 server can send
+        responses. They may be used in situations such as:
+        * an organization has an org specific authentication endpoint
+        * an organization can not use an endpoint directly because of
+          constraints on access to the internet (i.e. when running code on a
+          remotely hosted device).
     Returns
     -------
     credentials : google.oauth2.credentials.Credentials
@@ -248,7 +287,7 @@ def get_user_credentials(
         "installed": {
             "client_id": client_id,
             "client_secret": client_secret,
-            "redirect_uris": ["urn:ietf:wg:oauth:2.0:oob"],
+            "redirect_uris": [redirect_uri, "urn:ietf:wg:oauth:2.0:oob"],
             "auth_uri": GOOGLE_AUTH_URI,
             "token_uri": GOOGLE_TOKEN_URI,
         }
@@ -263,7 +302,8 @@ def get_user_credentials(
             if use_local_webserver:
                 credentials = _webserver.run_local_server(app_flow)
             else:
-                credentials = app_flow.run_console()
+                credentials = _run_webapp(app_flow, redirect_uri=redirect_uri)
+
         except oauthlib.oauth2.rfc6749.errors.OAuth2Error as exc:
             raise exceptions.PyDataCredentialsError(
                 "Unable to get valid credentials: {}".format(exc)
