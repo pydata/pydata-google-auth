@@ -24,7 +24,7 @@ import shutil
 import nox
 
 
-BLACK_VERSION = "black==19.10b0"
+BLACK_VERSION = "black==22.12.0"
 BLACK_PATHS = ["docs", "pydata_google_auth", "tests", "noxfile.py", "setup.py"]
 
 DEFAULT_PYTHON_VERSION = "3.8"
@@ -57,9 +57,11 @@ def lint(session):
     """
     session.install("flake8", BLACK_VERSION)
     session.run(
-        "black", "--check", *BLACK_PATHS,
+        "black",
+        "--check",
+        *BLACK_PATHS,
     )
-    session.run("flake8", "pydata_google_auth", "tests")
+    session.run("flake8", "--append-config", ".flake8", "pydata_google_auth", "tests")
 
 
 @nox.session(python=DEFAULT_PYTHON_VERSION)
@@ -67,7 +69,8 @@ def blacken(session):
     """Run black. Format code to uniform standard."""
     session.install(BLACK_VERSION)
     session.run(
-        "black", *BLACK_PATHS,
+        "black",
+        *BLACK_PATHS,
     )
 
 
@@ -85,7 +88,12 @@ def default(session):
         CURRENT_DIRECTORY / "testing" / f"constraints-{session.python}.txt"
     )
     session.install(
-        "mock", "pyfakefs", "pytest", "pytest-cov", "-c", constraints_path,
+        "mock",
+        "pyfakefs",
+        "pytest",
+        "pytest-cov",
+        "-c",
+        constraints_path,
     )
 
     session.install("-e", ".", "-c", constraints_path)
