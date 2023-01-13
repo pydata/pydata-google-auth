@@ -16,8 +16,13 @@ from pydata_google_auth import _webserver
 
 logger = logging.getLogger(__name__)
 
-CLIENT_ID = "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd.apps.googleusercontent.com"
-CLIENT_SECRET = "JSF-iczmzEgbTR-XK-2xaWAc"
+DESKTOP_CLIENT_ID = "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd.apps.googleusercontent.com"
+DESKTOP_CLIENT_SECRET = "JSF-iczmzEgbTR-XK-2xaWAc"
+
+# webapp CID/CS to enable a redirect uri/client id/secret that is not OOB.
+WEBAPP_REDIRECT_URI = "https://pydata-google-auth.readthedocs.io/en/latest/oauth.html"
+WEBAPP_CLIENT_ID = "262006177488-ka1m0ue4fptfmt9siejdd5lom7p39upa.apps.googleusercontent.com"
+WEBAPP_CLIENT_SECRET = "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"
 
 GOOGLE_AUTH_URI = "https://accounts.google.com/o/oauth2/auth"
 GOOGLE_TOKEN_URI = "https://oauth2.googleapis.com/token"
@@ -279,10 +284,19 @@ def get_user_credentials(
     # aren't included in the docs. A string of bytes isn't useful for the
     # documentation and might encourage the values to be used outside of this
     # library.
-    if client_id is None:
-        client_id = CLIENT_ID
-    if client_secret is None:
-        client_secret = CLIENT_SECRET
+
+    if use_local_webserver:
+        if client_id is None:
+            client_id = DESKTOP_CLIENT_ID
+        if client_secret is None:
+            client_secret = DESKTOP_CLIENT_SECRET
+
+    elif not use_local_webserver and not redirect_uri:
+        if client_id is None:
+            client_id = WEBAPP_CLIENT_ID
+        if client_secret is None:
+            client_secret = WEBAPP_CLIENT_SECRET
+        redirect_uri = WEBAPP_REDIRECT_URI
 
     credentials = credentials_cache.load()
 

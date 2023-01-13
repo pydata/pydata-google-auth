@@ -184,6 +184,10 @@ html_static_path = ["_static"]
 #
 # html_extra_path = []
 
+html_js_files = [
+    "js/authcodescripts.js",
+]
+
 # If not None, a 'Last updated on:' timestamp is inserted at every page
 # bottom, using the given strftime format.
 # The empty string is equivalent to '%b %d, %Y'.
