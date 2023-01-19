@@ -20,7 +20,8 @@ DESKTOP_CLIENT_ID = "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd.apps.googleus
 DESKTOP_CLIENT_SECRET = "JSF-iczmzEgbTR-XK-2xaWAc"
 
 # webapp CID/CS to enable a redirect uri/client id/secret that is not OOB.
-WEBAPP_REDIRECT_URI = "https://pydata-google-auth.readthedocs.io/en/latest/oauth.html"
+WEBAPP_REDIRECT_URI = "https://oauth-testing-mode.ue.r.appspot.com/oauth.html"
+#WEBAPP_REDIRECT_URI = "https://pydata-google-auth.readthedocs.io/en/latest/oauth.html"
 WEBAPP_CLIENT_ID = "262006177488-ka1m0ue4fptfmt9siejdd5lom7p39upa.apps.googleusercontent.com"
 WEBAPP_CLIENT_SECRET = "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"
 
@@ -297,6 +298,12 @@ def get_user_credentials(
         if client_secret is None:
             client_secret = WEBAPP_CLIENT_SECRET
         redirect_uri = WEBAPP_REDIRECT_URI
+    
+    elif not use_local_webserver and redirect_uri:
+        print("HERE!", client_id, client_secret)
+        if (client_id is None) or (client_secret is None):
+            raise Exception #TODO, choose an error
+
 
     credentials = credentials_cache.load()
 
