@@ -16,12 +16,16 @@ from pydata_google_auth import _webserver
 
 logger = logging.getLogger(__name__)
 
-DESKTOP_CLIENT_ID = "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd.apps.googleusercontent.com"
+DESKTOP_CLIENT_ID = (
+    "262006177488-3425ks60hkk80fssi9vpohv88g6q1iqd.apps.googleusercontent.com"
+)
 DESKTOP_CLIENT_SECRET = "JSF-iczmzEgbTR-XK-2xaWAc"
 
 # webapp CID/CS to enable a redirect uri/client id/secret that is not OOB.
 WEBAPP_REDIRECT_URI = "https://pydata-google-auth.readthedocs.io/en/latest/oauth.html"
-WEBAPP_CLIENT_ID = "262006177488-ka1m0ue4fptfmt9siejdd5lom7p39upa.apps.googleusercontent.com"
+WEBAPP_CLIENT_ID = (
+    "262006177488-ka1m0ue4fptfmt9siejdd5lom7p39upa.apps.googleusercontent.com"
+)
 WEBAPP_CLIENT_SECRET = "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"
 
 GOOGLE_AUTH_URI = "https://accounts.google.com/o/oauth2/auth"
@@ -297,14 +301,13 @@ def get_user_credentials(
         if client_secret is None:
             client_secret = WEBAPP_CLIENT_SECRET
         redirect_uri = WEBAPP_REDIRECT_URI
-    
+
     elif not use_local_webserver and redirect_uri:
         if (client_id is None) or (client_secret is None):
             raise exceptions.PyDataCredentialsError(
-                f"""Unable to get valid credentials: please provide a
+                """Unable to get valid credentials: please provide a
 valid client_id and/or client_secret."""
             )
-
 
     credentials = credentials_cache.load()
 
