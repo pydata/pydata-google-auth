@@ -1,3 +1,7 @@
+# Releasing pydata-google-auth
+
+*   Update the CHANGELOG. Example: https://github.com/pydata/pydata-google-auth/pull/60
+
 *   Tag commit
 
         git tag -a x.x.x -m 'Version x.x.x'
@@ -9,7 +13,7 @@
 *   Build the package
 
         git clean -xfd
-        python setup.py register sdist bdist_wheel --universal
+        python setup.py sdist bdist_wheel --universal
 
 *   Upload to test PyPI
 
