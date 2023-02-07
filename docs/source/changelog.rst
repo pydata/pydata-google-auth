@@ -7,9 +7,9 @@ Changelog
 --------------------
 
 - Adds decision logic to handle use cases where a user may not have the
-  ability to log in via an Out of Band authentication flow.
+  ability to log in via an Out of Band authentication flow. (:issue:`54`)
 
-- Also provides an OAuth page as part of the documentation. (:issue:`54`)
+- Also provides an OAuth page as part of the documentation.
 
 .. _changelog-1.5.0:
 
