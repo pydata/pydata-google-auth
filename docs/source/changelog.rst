@@ -1,13 +1,15 @@
 Changelog
 =========
 
-.. _changelog-1.6.0:
+.. _changelog-1.7.0:
 
 1.7.0 / (2023-02-07)
 --------------------
 
 - Reissue of the library with the changes from 1.6.0 but with a new 
   version number due to a conflict in releases.
+
+.. _changelog-1.6.0:
 
 1.6.0 / (2023-02-07)
 --------------------
