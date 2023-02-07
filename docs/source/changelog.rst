@@ -1,6 +1,16 @@
 Changelog
 =========
 
+.. _changelog-1.6.0:
+
+1.6.0 / (2023-02-07)
+--------------------
+
+- Adds decision logic to handle use cases where a user may not have the
+  ability to log in via an Out of Band authentication flow.
+
+- Also provides an OAuth page as part of the documentation. (:issue:`54`)
+
 .. _changelog-1.5.0:
 
 1.5.0 / (2023-01-09)
