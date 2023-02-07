@@ -1,6 +1,22 @@
 Changelog
 =========
 
+.. _changelog-1.6.0:
+
+1.7.0 / (2023-02-07)
+--------------------
+
+- Reissue of the library with the changes from 1.6.0 but with a new 
+  version number due to a conflict in releases.
+
+1.6.0 / (2023-02-07)
+--------------------
+
+- Adds decision logic to handle use cases where a user may not have the
+  ability to log in via an Out of Band authentication flow. (:issue:`54`)
+
+- Also provides an OAuth page as part of the documentation.
+
 .. _changelog-1.5.0:
 
 1.5.0 / (2023-01-09)
