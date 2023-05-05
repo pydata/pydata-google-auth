@@ -157,6 +157,18 @@ def default(
     return credentials, None
 
 
+def _ensure_application_default_credentials_in_colab_environment():
+    # This is a special handling for google colab environment where we want to
+    # use the colab specific authentication flow
+    # https://github.com/googlecolab/colabtools/blob/3c8772efd332289e1c6d1204826b0915d22b5b95/google/colab/auth.py#L209
+    try:
+        from google.colab import auth
+
+        auth.authenticate_user()
+    except (ModuleNotFoundError, ImportError):
+        pass
+
+
 def get_application_default_credentials(scopes):
     """
     This method tries to retrieve the "default application credentials".
@@ -177,6 +189,8 @@ def get_application_default_credentials(scopes):
         from the environment. Or, the retrieved credentials do not
         have access to the project (project_id) on BigQuery.
     """
+
+    _ensure_application_default_credentials_in_colab_environment()
 
     try:
         credentials, project = google.auth.default(scopes=scopes)
