@@ -24,6 +24,16 @@ User credentials
 Use the :func:`pydata_google_auth.get_user_credentials` to get user
 credentials, authenticated to Google APIs.
 
+By default, pydata-google-auth will listen for the credentials on a local
+webserver, which is used as the redirect page from Google's OAuth 2.0 flow.
+When you set ``use_local_webserver=False``, pydata-google-auth will request
+that you copy a token from the :ref:`oauth-sign-in` page.
+
+.. toctree::
+   :maxdepth: 2
+
+   oauth.rst
+
 Default credentials
 -------------------
 

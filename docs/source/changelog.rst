@@ -1,6 +1,15 @@
 Changelog
 =========
 
+.. _changelog-1.8.0:
+
+1.8.0 / (2023-05-09)
+--------------------
+
+- When running on Google Colab, try Colab-based authentication
+  (``google.colab.auth.authenticate_user()``) before attempting the Google
+  Application Default Credentials flow. (:issue:`68`)
+
 .. _changelog-1.7.0:
 
 1.7.0 / (2023-02-07)
