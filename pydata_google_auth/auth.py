@@ -165,7 +165,7 @@ def _ensure_application_default_credentials_in_colab_environment():
         from google.colab import auth
 
         auth.authenticate_user()
-    except (ModuleNotFoundError, ImportError):
+    except ImportError:
         pass
 
 

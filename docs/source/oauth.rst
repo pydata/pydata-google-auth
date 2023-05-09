@@ -2,6 +2,9 @@
    :alt: pydata logo
    :class: logo
 
+
+.. _oauth-sign-in:
+
 Sign in to BigQuery
 ===================
 
