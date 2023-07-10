@@ -1,6 +1,14 @@
 Changelog
 =========
 
+.. _changelog-1.8.1:
+
+1.8.1 / (2023-07-10)
+--------------------
+
+- If any exception occurs during Google Colab authentication, fallback to 
+  the Google Application Default Credentials flow. (:issue:`71`)
+
 .. _changelog-1.8.0:
 
 1.8.0 / (2023-05-09)
