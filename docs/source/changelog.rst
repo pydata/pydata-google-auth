@@ -1,6 +1,14 @@
 Changelog
 =========
 
+.. _changelog-1.8.2:
+
+1.8.2 / (2023-08-01)
+--------------------
+
+- Ensure that the user credentials flow always gets a refresh token.
+  (:issue:`72`)
+
 .. _changelog-1.8.1:
 
 1.8.1 / (2023-07-10)
