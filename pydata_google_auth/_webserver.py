@@ -64,7 +64,7 @@ def find_open_port(start=8080, stop=None):
     return None
 
 
-def run_local_server(app_flow):
+def run_local_server(app_flow, **kwargs):
     """Run local webserver installed app flow on some open port.
 
     Parameters
@@ -86,4 +86,4 @@ def run_local_server(app_flow):
     port = find_open_port()
     if not port:
         raise exceptions.PyDataConnectionError("Could not find open port.")
-    return app_flow.run_local_server(host=LOCALHOST, port=port)
+    return app_flow.run_local_server(host=LOCALHOST, port=port, **kwargs)

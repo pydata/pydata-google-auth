@@ -31,6 +31,13 @@ WEBAPP_CLIENT_SECRET = "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"
 GOOGLE_AUTH_URI = "https://accounts.google.com/o/oauth2/auth"
 GOOGLE_TOKEN_URI = "https://oauth2.googleapis.com/token"
 
+AUTH_URI_KWARGS = {
+    # Ensure that we get a refresh token by telling Google we want to assume
+    # this is first time we're authorizing this app. See:
+    # https://github.com/googleapis/google-api-python-client/issues/213#issuecomment-205886341
+    "prompt": "consent",
+}
+
 
 def _run_webapp(flow, redirect_uri=None, **kwargs):
 
@@ -352,9 +359,9 @@ valid client_id and/or client_secret."""
 
         try:
             if use_local_webserver:
-                credentials = _webserver.run_local_server(app_flow)
+                credentials = _webserver.run_local_server(app_flow, **AUTH_URI_KWARGS)
             else:
-                credentials = _run_webapp(app_flow, redirect_uri=redirect_uri)
+                credentials = _run_webapp(app_flow, redirect_uri=redirect_uri, **AUTH_URI_KWARGS)
 
         except oauthlib.oauth2.rfc6749.errors.OAuth2Error as exc:
             raise exceptions.PyDataCredentialsError(
