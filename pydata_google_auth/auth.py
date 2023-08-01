@@ -361,7 +361,9 @@ valid client_id and/or client_secret."""
             if use_local_webserver:
                 credentials = _webserver.run_local_server(app_flow, **AUTH_URI_KWARGS)
             else:
-                credentials = _run_webapp(app_flow, redirect_uri=redirect_uri, **AUTH_URI_KWARGS)
+                credentials = _run_webapp(
+                    app_flow, redirect_uri=redirect_uri, **AUTH_URI_KWARGS
+                )
 
         except oauthlib.oauth2.rfc6749.errors.OAuth2Error as exc:
             raise exceptions.PyDataCredentialsError(
