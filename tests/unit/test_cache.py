@@ -7,6 +7,7 @@ import os.path
 import pytest
 
 import google.oauth2.credentials
+
 try:
     from importlib import reload
 except ImportError: # Py2 compat
