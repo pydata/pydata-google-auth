@@ -40,7 +40,6 @@ AUTH_URI_KWARGS = {
 
 
 def _run_webapp(flow, redirect_uri=None, **kwargs):
-
     if redirect_uri:
         flow.redirect_uri = redirect_uri
     else:

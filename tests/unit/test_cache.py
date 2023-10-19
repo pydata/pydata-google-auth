@@ -10,7 +10,8 @@ import google.oauth2.credentials
 
 try:
     from importlib import reload
-except ImportError: # Py2 compat
+
+except ImportError:  # Py2 compat
     from six.moves import reload_module as reload
 
 
