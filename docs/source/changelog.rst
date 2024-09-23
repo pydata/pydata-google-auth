@@ -1,5 +1,11 @@
 Changelog
 =========
+.. _changelog-1.8.3:
+
+1.8.3 / (future)
+----------------
+
+- Clean up remaining uses of six (:issue:`73`)
 
 .. _changelog-1.8.2:
 

@@ -7,7 +7,12 @@ import os.path
 import pytest
 
 import google.oauth2.credentials
-from six.moves import reload_module
+
+try:
+    from importlib import reload
+
+except ImportError:  # Py2 compat
+    from six.moves import reload_module as reload
 
 
 @pytest.fixture
@@ -29,7 +34,7 @@ def test_import_unwriteable_fs(module_under_test, monkeypatch):
     monkeypatch.setattr(os.path, "exists", lambda _: False)
     monkeypatch.setattr(os, "makedirs", raise_unwriteable)
 
-    reload_module(module_under_test)
+    reload(module_under_test)
 
     assert module_under_test.NOOP is not None
 
