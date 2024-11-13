@@ -163,7 +163,7 @@ def default(
     return credentials, None
 
 
-def _ensure_application_default_credentials_in_colab_environment():
+def get_colab_default_credentials(scopes):
     # This is a special handling for google colab environment where we want to
     # use the colab specific authentication flow
     # https://github.com/googlecolab/colabtools/blob/3c8772efd332289e1c6d1204826b0915d22b5b95/google/colab/auth.py#L209
@@ -171,6 +171,10 @@ def _ensure_application_default_credentials_in_colab_environment():
         from google.colab import auth
 
         auth.authenticate_user()
+
+        # authenticate_user() sets the default credentials, but we 
+        # still need to get the token from those default credentials.
+        return get_application_default_credentials(scopes=scopes)
     except Exception:
         # We are catching a broad exception class here because we want to be
         # agnostic to anything that could internally go wrong in the google
@@ -182,7 +186,7 @@ def _ensure_application_default_credentials_in_colab_environment():
         #
         # The MessageError happens on Vertex Colab when it fails to resolve auth
         # from the Compute Engine Metadata server.
-        pass
+        return None, None
 
 
 def get_application_default_credentials(scopes):
@@ -205,9 +209,6 @@ def get_application_default_credentials(scopes):
         from the environment. Or, the retrieved credentials do not
         have access to the project (project_id) on BigQuery.
     """
-
-    _ensure_application_default_credentials_in_colab_environment()
-
     try:
         credentials, project = google.auth.default(scopes=scopes)
     except (google.auth.exceptions.DefaultCredentialsError, IOError) as exc:
@@ -311,6 +312,16 @@ def get_user_credentials(
     pydata_google_auth.exceptions.PyDataCredentialsError
         If unable to get valid user credentials.
     """
+
+    # If the user isn't explicitly asking to authenticate with a particular
+    # client ID, then we should try to authenticate the user with Colab-based
+    # credentials, if possible.
+    if client_id is None:
+        credentials, default_project = get_colab_default_credentials(scopes)
+
+        if credentials and credentials.valid:
+            return credentials, default_project
+
     if auth_local_webserver is not None:
         use_local_webserver = auth_local_webserver
 
