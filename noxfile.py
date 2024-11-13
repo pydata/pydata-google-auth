@@ -28,8 +28,8 @@ BLACK_VERSION = "black==22.12.0"
 BLACK_PATHS = ["docs", "pydata_google_auth", "tests", "noxfile.py", "setup.py"]
 
 DEFAULT_PYTHON_VERSION = "3.8"
-SYSTEM_TEST_PYTHON_VERSIONS = ["2.7", "3.13"]
-UNIT_TEST_PYTHON_VERSIONS = ["2.7", "3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+SYSTEM_TEST_PYTHON_VERSIONS = ["3.9", "3.13"]
+UNIT_TEST_PYTHON_VERSIONS = ["3.9", "3.10", "3.11", "3.12", "3.13"]
 
 CURRENT_DIRECTORY = pathlib.Path(__file__).parent.absolute()
 
