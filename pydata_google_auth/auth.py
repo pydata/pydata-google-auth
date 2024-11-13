@@ -317,10 +317,13 @@ def get_user_credentials(
     # client ID, then we should try to authenticate the user with Colab-based
     # credentials, if possible.
     if client_id is None:
-        credentials, default_project = get_colab_default_credentials(scopes)
+        # default_project ignored for colab credentials
+        credentials, _ = get_colab_default_credentials(scopes)
 
         if credentials and credentials.valid:
-            return credentials, default_project
+            # Make sure to exit early since we don't want to try to save these
+            # credentials to a cache file.
+            return credentials
 
     if auth_local_webserver is not None:
         use_local_webserver = auth_local_webserver
