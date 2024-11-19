@@ -323,7 +323,7 @@ def get_user_credentials(
         # Break early to avoid trying to fetch any other kinds of credentials.
         # Prefer Colab credentials over any credentials based on the default
         # client ID.
-        if credentials and credentials.valid:
+        if credentials:
             # Make sure to exit early since we don't want to try to save these
             # credentials to a cache file.
             return credentials
