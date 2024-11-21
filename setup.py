@@ -18,10 +18,8 @@ def readme():
 
 INSTALL_REQUIRES = [
     "setuptools",
-    "google-auth >=1.25.0, <2.0dev;  python_version<'3.0'",
-    "google-auth >=1.25.0, <3.0dev; python_version>='3.6'",
-    "google-auth-oauthlib >=0.4.0, <0.4.2dev; python_version<'3.0'",
-    "google-auth-oauthlib >=0.4.0; python_version>='3.6'",
+    "google-auth >=1.25.0, <3.0dev",
+    "google-auth-oauthlib >=0.4.0",
 ]
 
 setup(
@@ -40,15 +38,11 @@ setup(
         "Intended Audience :: Science/Research",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Topic :: Scientific/Engineering",
         "License :: OSI Approved :: BSD License",
     ],
@@ -56,4 +50,5 @@ setup(
     install_requires=INSTALL_REQUIRES,
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     test_suite="tests",
+    python_requires=">=3.9",
 )
