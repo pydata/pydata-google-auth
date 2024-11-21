@@ -166,6 +166,7 @@ def default(
 def try_colab_auth_import():
     try:
         from google.colab import auth
+
         return auth
     except Exception:
         # We are catching a broad exception class here because we want to be
@@ -191,7 +192,7 @@ def get_colab_default_credentials(scopes):
     try:
         auth.authenticate_user()
 
-        # authenticate_user() sets the default credentials, but we 
+        # authenticate_user() sets the default credentials, but we
         # still need to get the token from those default credentials.
         return get_application_default_credentials(scopes=scopes)
     except Exception:
@@ -258,8 +259,12 @@ def get_user_credentials(
     """
     Gets user account credentials.
 
-    This function authenticates using user credentials, either loading saved
-    credentials from the cache or by going through the OAuth 2.0 flow.
+    This function authenticates using user credentials, by trying to
+
+    1. Authenticate using ``google.colab.authenticate_user()``
+    2. Load saved credentials from the ``credentials_cache``
+    3. Go through the OAuth 2.0 flow (with provided ``client_id`` and
+       ``client_secret``)
 
     The default read-write cache attempts to read credentials from a file on
     disk. If these credentials are not found or are invalid, it begins an
@@ -330,20 +335,18 @@ def get_user_credentials(
         If unable to get valid user credentials.
     """
 
-    # If the user isn't explicitly asking to authenticate with a particular
-    # client ID, then we should try to authenticate the user with Colab-based
-    # credentials, if possible.
-    if client_id is None:
-        # default_project ignored for colab credentials
-        credentials, _ = get_colab_default_credentials(scopes)
+    # Try to authenticate the user with Colab-based credentials, if possible.
+    # The default_project ignored for colab credentials. It's not usually set,
+    # anyway.
+    credentials, _ = get_colab_default_credentials(scopes)
 
-        # Break early to avoid trying to fetch any other kinds of credentials.
-        # Prefer Colab credentials over any credentials based on the default
-        # client ID.
-        if credentials:
-            # Make sure to exit early since we don't want to try to save these
-            # credentials to a cache file.
-            return credentials
+    # Break early to avoid trying to fetch any other kinds of credentials.
+    # Prefer Colab credentials over any credentials based on the default
+    # client ID.
+    if credentials:
+        # Make sure to exit early since we don't want to try to save these
+        # credentials to a cache file.
+        return credentials
 
     if auth_local_webserver is not None:
         use_local_webserver = auth_local_webserver

@@ -67,11 +67,13 @@ def test_default_loads_user_credentials(monkeypatch, module_under_test):
 def test_get_user_credentials_tries_colab_first(monkeypatch, module_under_test):
     colab_auth_module = mock.Mock()
     try_colab_auth_import = mock.Mock(return_value=colab_auth_module)
-    monkeypatch.setattr(module_under_test, "try_colab_auth_import", try_colab_auth_import)
+    monkeypatch.setattr(
+        module_under_test, "try_colab_auth_import", try_colab_auth_import
+    )
     default_credentials = mock.create_autospec(google.auth.credentials.Credentials)
     default_call_times = 0
 
-    # Can't use a Mock because we want to check authenticate_user.    
+    # Can't use a Mock because we want to check authenticate_user.
     def mock_default(scopes=None, request=None):
         nonlocal default_call_times
         default_call_times += 1
@@ -92,22 +94,21 @@ def test_get_user_credentials_tries_colab_first(monkeypatch, module_under_test):
     assert default_call_times == 1
 
 
-def test_get_user_credentials_skips_colab_if_client_id_set(monkeypatch, module_under_test):
-    colab_auth_module = mock.Mock()
-    try_colab_auth_import = mock.Mock(return_value=colab_auth_module)
-    monkeypatch.setattr(module_under_test, "try_colab_auth_import", try_colab_auth_import)
+def test_get_user_credentials_skips_colab_if_no_colab(monkeypatch, module_under_test):
+    try_colab_auth_import = mock.Mock(return_value=None)
+    monkeypatch.setattr(
+        module_under_test, "try_colab_auth_import", try_colab_auth_import
+    )
     credentials_cache = mock.create_autospec(pydata_google_auth.cache.CredentialsCache)
     loaded_credentials = mock.Mock()
     credentials_cache.load.return_value = loaded_credentials
 
     credentials = module_under_test.get_user_credentials(
         TEST_SCOPES,
-        client_id="my-client-id",
         credentials_cache=credentials_cache,
     )
 
-    assert credentials is loaded_credentials 
-    colab_auth_module.authenticate_user.assert_not_called()
+    assert credentials is loaded_credentials
 
 
 def test_load_service_account_credentials(monkeypatch, tmp_path, module_under_test):

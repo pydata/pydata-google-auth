@@ -27,7 +27,9 @@ import nox
 BLACK_VERSION = "black==22.12.0"
 BLACK_PATHS = ["docs", "pydata_google_auth", "tests", "noxfile.py", "setup.py"]
 
-DEFAULT_PYTHON_VERSION = "3.8"
+SPHINX_VERSION = "sphinx==4.5.0"
+
+DEFAULT_PYTHON_VERSION = "3.10"
 SYSTEM_TEST_PYTHON_VERSIONS = ["3.9", "3.13"]
 UNIT_TEST_PYTHON_VERSIONS = ["3.9", "3.10", "3.11", "3.12", "3.13"]
 
@@ -191,8 +193,21 @@ def cover(session):
 def docs(session):
     """Build the docs for this library."""
 
-    session.install("sphinx==4.0.2", "sphinx_rtd_theme", "ipython")
     session.install("-e", ".")
+    session.install(
+        # We need to pin to specific versions of the `sphinxcontrib-*` packages
+        # which still support sphinx 4.x.
+        # See https://github.com/googleapis/sphinx-docfx-yaml/issues/344
+        # and https://github.com/googleapis/sphinx-docfx-yaml/issues/345.
+        "sphinxcontrib-applehelp==1.0.4",
+        "sphinxcontrib-devhelp==1.0.2",
+        "sphinxcontrib-htmlhelp==2.0.1",
+        "sphinxcontrib-qthelp==1.0.3",
+        "sphinxcontrib-serializinghtml==1.1.5",
+        SPHINX_VERSION,
+        "alabaster",
+        "recommonmark",
+    )
 
     shutil.rmtree(os.path.join("docs", "source", "_build"), ignore_errors=True)
     session.run(
