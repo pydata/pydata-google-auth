@@ -163,13 +163,32 @@ def default(
     return credentials, None
 
 
-def get_colab_default_credentials(scopes):
-    # This is a special handling for google colab environment where we want to
-    # use the colab specific authentication flow
-    # https://github.com/googlecolab/colabtools/blob/3c8772efd332289e1c6d1204826b0915d22b5b95/google/colab/auth.py#L209
+def try_colab_auth_import():
     try:
         from google.colab import auth
+        return auth
+    except Exception:
+        # We are catching a broad exception class here because we want to be
+        # agnostic to anything that could internally go wrong in the google
+        # colab auth. Some of the known exception we want to pass on are:
+        #
+        # ModuleNotFoundError: No module named 'google.colab'
+        # ImportError: cannot import name 'auth' from 'google.cloud'
+        return None
 
+
+def get_colab_default_credentials(scopes):
+    """This is a special handling for google colab environment where we want to
+    use the colab specific authentication flow.
+
+    See:
+    https://github.com/googlecolab/colabtools/blob/3c8772efd332289e1c6d1204826b0915d22b5b95/google/colab/auth.py#L209
+    """
+    auth = try_colab_auth_import()
+    if auth is None:
+        return None, None
+
+    try:
         auth.authenticate_user()
 
         # authenticate_user() sets the default credentials, but we 
@@ -180,8 +199,6 @@ def get_colab_default_credentials(scopes):
         # agnostic to anything that could internally go wrong in the google
         # colab auth. Some of the known exception we want to pass on are:
         #
-        # ModuleNotFoundError: No module named 'google.colab'
-        # ImportError: cannot import name 'auth' from 'google.cloud'
         # MessageError: Error: credential propagation was unsuccessful
         #
         # The MessageError happens on Vertex Colab when it fails to resolve auth
