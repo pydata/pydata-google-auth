@@ -1,11 +1,16 @@
 Changelog
 =========
-.. _changelog-1.8.3:
 
-1.8.3 / (future)
-----------------
+.. _changelog-1.9.0:
 
+1.9.0 / (2024-11-21)
+--------------------
+
+**Breaking Change:** Drop support for Python <= 3.8 (:issue:`77`)
+
+- Try Colab credentials in `get_user_credentials`, avoids warning on Colab Enterprise (:issue:`76`)
 - Clean up remaining uses of six (:issue:`73`)
+
 
 .. _changelog-1.8.2:
 
