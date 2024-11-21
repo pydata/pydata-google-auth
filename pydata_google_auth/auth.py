@@ -163,14 +163,11 @@ def default(
     return credentials, None
 
 
-def _ensure_application_default_credentials_in_colab_environment():
-    # This is a special handling for google colab environment where we want to
-    # use the colab specific authentication flow
-    # https://github.com/googlecolab/colabtools/blob/3c8772efd332289e1c6d1204826b0915d22b5b95/google/colab/auth.py#L209
+def try_colab_auth_import():
     try:
         from google.colab import auth
 
-        auth.authenticate_user()
+        return auth
     except Exception:
         # We are catching a broad exception class here because we want to be
         # agnostic to anything that could internally go wrong in the google
@@ -178,11 +175,36 @@ def _ensure_application_default_credentials_in_colab_environment():
         #
         # ModuleNotFoundError: No module named 'google.colab'
         # ImportError: cannot import name 'auth' from 'google.cloud'
+        return None
+
+
+def get_colab_default_credentials(scopes):
+    """This is a special handling for google colab environment where we want to
+    use the colab specific authentication flow.
+
+    See:
+    https://github.com/googlecolab/colabtools/blob/3c8772efd332289e1c6d1204826b0915d22b5b95/google/colab/auth.py#L209
+    """
+    auth = try_colab_auth_import()
+    if auth is None:
+        return None, None
+
+    try:
+        auth.authenticate_user()
+
+        # authenticate_user() sets the default credentials, but we
+        # still need to get the token from those default credentials.
+        return get_application_default_credentials(scopes=scopes)
+    except Exception:
+        # We are catching a broad exception class here because we want to be
+        # agnostic to anything that could internally go wrong in the google
+        # colab auth. Some of the known exception we want to pass on are:
+        #
         # MessageError: Error: credential propagation was unsuccessful
         #
         # The MessageError happens on Vertex Colab when it fails to resolve auth
         # from the Compute Engine Metadata server.
-        pass
+        return None, None
 
 
 def get_application_default_credentials(scopes):
@@ -205,9 +227,6 @@ def get_application_default_credentials(scopes):
         from the environment. Or, the retrieved credentials do not
         have access to the project (project_id) on BigQuery.
     """
-
-    _ensure_application_default_credentials_in_colab_environment()
-
     try:
         credentials, project = google.auth.default(scopes=scopes)
     except (google.auth.exceptions.DefaultCredentialsError, IOError) as exc:
@@ -240,8 +259,12 @@ def get_user_credentials(
     """
     Gets user account credentials.
 
-    This function authenticates using user credentials, either loading saved
-    credentials from the cache or by going through the OAuth 2.0 flow.
+    This function authenticates using user credentials, by trying to
+
+    1. Authenticate using ``google.colab.authenticate_user()``
+    2. Load saved credentials from the ``credentials_cache``
+    3. Go through the OAuth 2.0 flow (with provided ``client_id`` and
+       ``client_secret``)
 
     The default read-write cache attempts to read credentials from a file on
     disk. If these credentials are not found or are invalid, it begins an
@@ -311,6 +334,20 @@ def get_user_credentials(
     pydata_google_auth.exceptions.PyDataCredentialsError
         If unable to get valid user credentials.
     """
+
+    # Try to authenticate the user with Colab-based credentials, if possible.
+    # The default_project ignored for colab credentials. It's not usually set,
+    # anyway.
+    credentials, _ = get_colab_default_credentials(scopes)
+
+    # Break early to avoid trying to fetch any other kinds of credentials.
+    # Prefer Colab credentials over any credentials based on the default
+    # client ID.
+    if credentials:
+        # Make sure to exit early since we don't want to try to save these
+        # credentials to a cache file.
+        return credentials
+
     if auth_local_webserver is not None:
         use_local_webserver = auth_local_webserver
 
