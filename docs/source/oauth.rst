@@ -20,7 +20,7 @@ resources via one of several possible methods, including:
 
   OR a Jupyter/IPython magics command such as:
 
-  * ``%%bigquery``
+  * ``%%bigquery`` / ``%%bqsql``
   * ``%%spanner_graph``
 
 from this or another machine. If this is not the case, close this tab.
