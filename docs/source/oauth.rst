@@ -5,11 +5,11 @@
 
 .. _oauth-sign-in:
 
-Sign in to BigQuery
-===================
+Sign in to Google Cloud Platform
+================================
 
-You are seeing this page because you are attempting to access BigQuery via one 
-of several possible methods, including: 
+You are seeing this page because you are attempting to access Google Cloud Platform
+resources via one of several possible methods, including: 
   
   * the ``pydata-google-auth`` library
 
@@ -17,6 +17,11 @@ of several possible methods, including:
   
   * ``pandas.DataFrame.to_gbq()``
   * ``pandas.read_gbq()``
+
+  OR a Jupyter/IPython magics command such as:
+
+  * ``%%bigquery``
+  * ``%%spanner_graph``
 
 from this or another machine. If this is not the case, close this tab.
 
