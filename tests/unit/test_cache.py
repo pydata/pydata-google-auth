@@ -52,6 +52,19 @@ def test__get_default_credentials_path_windows_wo_appdata(
     assert creds_path is not None
 
 
+def test__get_default_credentials_path_uses_xdg_config_home(
+    module_under_test, monkeypatch
+):
+    """XDG_CONFIG_HOME should override the platform default config directory."""
+    monkeypatch.setattr(os, "name", "nt")
+    monkeypatch.setenv("APPDATA", "/windows/config")
+    monkeypatch.setenv("XDG_CONFIG_HOME", "/custom/config")
+
+    creds_path = module_under_test._get_default_credentials_path("dirname", "filename")
+
+    assert creds_path == os.path.join("/custom/config", "dirname", "filename")
+
+
 def test__save_user_account_credentials_wo_directory(module_under_test, fs):
     """Directories should be created if they don't exist."""
 
