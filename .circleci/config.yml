@@ -1,73 +1,43 @@
-# Python CircleCI 2.0 configuration file
+# Python CircleCI 2.1 configuration file
 #
-# Check https://circleci.com/docs/2.0/language-python/ for more details
-#
-version: 2
+version: 2.1
 jobs:
-  "unit-2.7":
-    docker:
-      - image: thekevjames/nox
-    steps:
-      - checkout
-      - run: nox -s unit-2.7
-
-  "unit-3.6":
-    docker:
-      - image: thekevjames/nox
-    steps:
-      - checkout
-      - run: nox -s unit-3.6
-
-  "unit-3.7":
-    docker:
-      - image: thekevjames/nox
-    steps:
-      - checkout
-      - run: nox -s unit-3.7
-
-  "unit-3.8":
-    docker:
-      - image: thekevjames/nox
-    steps:
-      - checkout
-      - run: nox -s unit-3.8
-
-  "unit-3.9":
+  unit-3-9:
     docker:
       - image: thekevjames/nox
     steps:
       - checkout
       - run: nox -s unit-3.9 cover
 
-  "unit-3.10":
+  unit-3-10:
     docker:
       - image: thekevjames/nox
     steps:
       - checkout
       - run: nox -s unit-3.10 cover
 
-  "unit-3.11":
+  unit-3-11:
     docker:
       - image: thekevjames/nox
     steps:
       - checkout
       - run: nox -s unit-3.11 cover
 
-  "unit-3.12":
+  unit-3-12:
     docker:
       - image: thekevjames/nox
     steps:
       - checkout
       - run: nox -s unit-3.12 cover
 
-  "unit-3.13":
+  unit-3-13:
     docker:
       - image: thekevjames/nox
     steps:
       - checkout
       - run: nox -s unit-3.13 cover
 
-  "lint":
+  lint:
     docker:
       - image: thekevjames/nox
     steps:
@@ -75,16 +45,16 @@ jobs:
       - run: nox -s lint
 
 workflows:
-  version: 2
   build:
     jobs:
-      - "unit-2.7"
-      - "unit-3.6"
-      - "unit-3.7"
-      - "unit-3.8"
-      - "unit-3.9"
-      - "unit-3.10"
-      - "unit-3.11"
-      - "unit-3.12"
-      - "unit-3.13"
+      - unit-3-9:
+          name: "unit-3.9"
+      - unit-3-10:
+          name: "unit-3.10"
+      - unit-3-11:
+          name: "unit-3.11"
+      - unit-3-12:
+          name: "unit-3.12"
+      - unit-3-13:
+          name: "unit-3.13"
       - lint
