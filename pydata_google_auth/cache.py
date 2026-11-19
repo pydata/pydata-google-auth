@@ -28,9 +28,9 @@ def _get_default_credentials_path(credentials_dirname, credentials_filename):
     str
         Path to the Google user credentials
     """
-    config_path = None
+    config_path = os.getenv("XDG_CONFIG_HOME")
 
-    if os.name == "nt":
+    if not config_path and os.name == "nt":
         config_path = os.getenv("APPDATA")
     if not config_path:
         config_path = os.path.join(os.path.expanduser("~"), ".config")
@@ -310,8 +310,8 @@ class ReadWriteCredentialsCache(CredentialsCache):
     ----------
     dirname : str, optional
         Name of directory to write credentials to. This directory is created
-        within the ``.config`` subdirectory of the ``HOME`` (``APPDATA`` on
-        Windows) directory.
+        within ``XDG_CONFIG_HOME`` when set. Otherwise, it is created within
+        ``APPDATA`` on Windows or the ``.config`` subdirectory of ``HOME``.
     filename : str, optional
         Name of the credentials file within the credentials directory.
     """
@@ -357,8 +357,8 @@ class WriteOnlyCredentialsCache(CredentialsCache):
     ----------
     dirname : str, optional
         Name of directory to write credentials to. This directory is created
-        within the ``.config`` subdirectory of the ``HOME`` (``APPDATA`` on
-        Windows) directory.
+        within ``XDG_CONFIG_HOME`` when set. Otherwise, it is created within
+        ``APPDATA`` on Windows or the ``.config`` subdirectory of ``HOME``.
     filename : str, optional
         Name of the credentials file within the credentials directory.
     """

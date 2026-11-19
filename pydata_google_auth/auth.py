@@ -104,9 +104,9 @@ def default(
         An object responsible for loading and saving user credentials.
 
         By default, pydata-google-auth reads and writes credentials in
-        ``$HOME/.config/pydata/pydata_google_credentials.json`` or
-        ``$APPDATA/.config/pydata/pydata_google_credentials.json`` on
-        Windows.
+        ``$XDG_CONFIG_HOME/pydata/pydata_google_credentials.json`` when set,
+        ``$APPDATA/pydata/pydata_google_credentials.json`` on Windows when
+        unset, or ``$HOME/.config/pydata/pydata_google_credentials.json``.
     use_local_webserver : bool, optional
         Use a local webserver for the user authentication
         :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Binds a
@@ -304,9 +304,9 @@ def get_user_credentials(
         An object responsible for loading and saving user credentials.
 
         By default, pydata-google-auth reads and writes credentials in
-        ``$HOME/.config/pydata/pydata_google_credentials.json`` or
-        ``$APPDATA/.config/pydata/pydata_google_credentials.json`` on
-        Windows.
+        ``$XDG_CONFIG_HOME/pydata/pydata_google_credentials.json`` when set,
+        ``$APPDATA/pydata/pydata_google_credentials.json`` on Windows when
+        unset, or ``$HOME/.config/pydata/pydata_google_credentials.json``.
     use_local_webserver : bool, optional
         Use a local webserver for the user authentication
         :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Binds a
