@@ -407,8 +407,7 @@ valid client_id and/or client_secret."""
             else:
                 if use_default_webapp_redirect:
                     # TODO(security): Remove WEBAPP_CLIENT_ID/WEBAPP_REDIRECT_URI
-                    # and revoke the redirect URI in GCP Console once downstream
-                    # callers migrate off use_local_webserver=False.
+                    # and revoke the redirect URI in GCP Console
                     warnings.warn(
                         "The default copy-paste authentication flow "
                         "(use_local_webserver=False without a custom redirect_uri) "
