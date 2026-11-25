@@ -19,7 +19,7 @@ def readme():
 INSTALL_REQUIRES = [
     "setuptools",
     "google-auth >=1.25.0, <3.0dev",
-    "google-auth-oauthlib >=0.4.0",
+    "google-auth-oauthlib >=0.4.2",
 ]
 
 setup(

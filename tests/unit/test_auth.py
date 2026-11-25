@@ -5,9 +5,14 @@ try:
 except ImportError:  # pragma: NO COVER
     import mock
 
+import builtins
+import urllib.parse
+import warnings
+
 import google.auth
 import google.auth.credentials
 import google.oauth2.credentials
+from google_auth_oauthlib import flow as oauthlib_flow
 import pytest
 
 from google.oauth2 import service_account
@@ -135,3 +140,207 @@ def test_load_service_account_credentials_raises_when_file_doesnt_exist(
 ):
     with pytest.raises(exceptions.PyDataCredentialsError):
         module_under_test.load_service_account_credentials("path/not/found.json")
+
+
+@pytest.mark.parametrize(
+    "use_local_webserver, extra_kwargs",
+    [
+        pytest.param(True, {}, id="local_webserver"),
+        pytest.param(False, {}, id="default_webapp"),
+        pytest.param(
+            False,
+            {
+                "client_id": "custom-client-id",
+                "client_secret": "custom-client-secret",
+                "redirect_uri": "https://org.example.com/oauth",
+            },
+            id="custom_redirect_uri",
+        ),
+    ],
+)
+def test_get_user_credentials_enables_pkce(
+    monkeypatch, module_under_test, use_local_webserver, extra_kwargs
+):
+    monkeypatch.setattr(module_under_test, "try_colab_auth_import", lambda: None)
+    credentials_cache = mock.create_autospec(pydata_google_auth.cache.CredentialsCache)
+    credentials_cache.load.return_value = None
+
+    captured_flow = None
+    fake_creds = FakeCredentials()
+
+    def capture_flow(app_flow, **kwargs):
+        nonlocal captured_flow
+        captured_flow = app_flow
+        return fake_creds
+
+    monkeypatch.setattr(module_under_test._webserver, "run_local_server", capture_flow)
+    monkeypatch.setattr(module_under_test, "_run_webapp", capture_flow)
+
+    with mock.patch.object(
+        module_under_test.flow.InstalledAppFlow,
+        "from_client_config",
+        wraps=oauthlib_flow.InstalledAppFlow.from_client_config,
+    ) as from_client_config:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            credentials = module_under_test.get_user_credentials(
+                TEST_SCOPES,
+                credentials_cache=credentials_cache,
+                use_local_webserver=use_local_webserver,
+                **extra_kwargs,
+            )
+
+    assert credentials is fake_creds
+    assert from_client_config.call_count == 1
+    assert from_client_config.call_args.kwargs["autogenerate_code_verifier"] is True
+    assert captured_flow.autogenerate_code_verifier is True
+
+
+def test__run_webapp_sends_pkce_challenge_and_verifier(
+    monkeypatch, capsys, module_under_test
+):
+    monkeypatch.setattr(builtins, "input", lambda _: "fake-auth-code")
+    fake_creds = FakeCredentials()
+    fetch_token_kwargs = {}
+
+    client_config = {
+        "installed": {
+            "client_id": "test-client-id",
+            "client_secret": "test-client-secret",
+            "redirect_uris": [module_under_test.WEBAPP_REDIRECT_URI],
+            "auth_uri": module_under_test.GOOGLE_AUTH_URI,
+            "token_uri": module_under_test.GOOGLE_TOKEN_URI,
+        }
+    }
+    app_flow = oauthlib_flow.InstalledAppFlow.from_client_config(
+        client_config, scopes=TEST_SCOPES, autogenerate_code_verifier=True
+    )
+
+    def fake_fetch_token(token_url, **token_kwargs):
+        fetch_token_kwargs.update(token_kwargs)
+        return {"access_token": "fake-token"}
+
+    monkeypatch.setattr(app_flow.oauth2session, "fetch_token", fake_fetch_token)
+    monkeypatch.setattr(
+        oauthlib_flow.Flow,
+        "credentials",
+        property(lambda self: fake_creds),
+    )
+
+    credentials = module_under_test._run_webapp(
+        app_flow,
+        redirect_uri=module_under_test.WEBAPP_REDIRECT_URI,
+        **module_under_test.AUTH_URI_KWARGS,
+    )
+
+    assert credentials is fake_creds
+    assert app_flow.code_verifier is not None
+    assert len(app_flow.code_verifier) == 128
+    assert fetch_token_kwargs["code"] == "fake-auth-code"
+    assert fetch_token_kwargs["code_verifier"] == app_flow.code_verifier
+
+    printed = capsys.readouterr().out
+    auth_url = printed.strip().split(": ", 1)[1]
+    query = urllib.parse.parse_qs(urllib.parse.urlparse(auth_url).query)
+    assert query["code_challenge_method"] == ["S256"]
+    assert "code_challenge" in query
+
+
+@pytest.mark.parametrize(
+    "has_cached_credentials, use_local_webserver, extra_kwargs, expect_warning",
+    [
+        pytest.param(False, False, {}, True, id="uncached_default_webapp"),
+        pytest.param(True, False, {}, False, id="cached_default_webapp"),
+        pytest.param(
+            False,
+            False,
+            {
+                "client_id": "custom-client-id",
+                "client_secret": "custom-client-secret",
+                "redirect_uri": "https://org.example.com/oauth",
+            },
+            False,
+            id="custom_redirect_uri",
+        ),
+        pytest.param(False, True, {}, False, id="local_webserver"),
+    ],
+)
+def test_get_user_credentials_webapp_deprecation_warning(
+    monkeypatch,
+    module_under_test,
+    has_cached_credentials,
+    use_local_webserver,
+    extra_kwargs,
+    expect_warning,
+):
+    monkeypatch.setattr(module_under_test, "try_colab_auth_import", lambda: None)
+    credentials_cache = mock.create_autospec(pydata_google_auth.cache.CredentialsCache)
+    fake_creds = FakeCredentials()
+    credentials_cache.load.return_value = fake_creds if has_cached_credentials else None
+    monkeypatch.setattr(
+        module_under_test._webserver,
+        "run_local_server",
+        mock.Mock(return_value=fake_creds),
+    )
+    monkeypatch.setattr(
+        module_under_test, "_run_webapp", mock.Mock(return_value=fake_creds)
+    )
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        module_under_test.get_user_credentials(
+            TEST_SCOPES,
+            credentials_cache=credentials_cache,
+            use_local_webserver=use_local_webserver,
+            **extra_kwargs,
+        )
+
+    deprecation_warnings = [
+        w for w in caught if issubclass(w.category, DeprecationWarning)
+    ]
+    if expect_warning:
+        assert len(deprecation_warnings) == 1
+        assert "default copy-paste authentication flow" in str(
+            deprecation_warnings[0].message
+        )
+    else:
+        assert deprecation_warnings == []
+
+
+@pytest.mark.parametrize(
+    "initial_uri, arg_uri, expected_uri",
+    [
+        pytest.param(
+            "https://org.example.com/oauth",
+            None,
+            "https://org.example.com/oauth",
+            id="existing_flow_uri",
+        ),
+        pytest.param(
+            None,
+            "https://override.example.com/oauth",
+            "https://override.example.com/oauth",
+            id="explicit_redirect_uri",
+        ),
+    ],
+)
+def test__run_webapp_sets_redirect_uri(
+    monkeypatch, module_under_test, initial_uri, arg_uri, expected_uri
+):
+    monkeypatch.setattr(builtins, "input", lambda _: "fake-auth-code")
+    fake_creds = FakeCredentials()
+    mock_flow = mock.Mock(redirect_uri=initial_uri)
+    mock_flow.authorization_url.return_value = ("https://example.com/auth", "state")
+    mock_flow.credentials = fake_creds
+
+    credentials = module_under_test._run_webapp(mock_flow, redirect_uri=arg_uri)
+
+    assert credentials is fake_creds
+    assert mock_flow.redirect_uri == expected_uri
+    mock_flow.fetch_token.assert_called_once_with(code="fake-auth-code")
+
+
+def test__run_webapp_raises_without_redirect_uri(module_under_test):
+    mock_flow = mock.Mock(redirect_uri=None)
+    with pytest.raises(exceptions.PyDataCredentialsError, match="redirect_uri"):
+        module_under_test._run_webapp(mock_flow)
