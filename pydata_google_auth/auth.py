@@ -1,6 +1,7 @@
 """Private module for fetching Google API credentials."""
 
 import logging
+import warnings
 
 import google.auth
 import google.auth.exceptions
@@ -42,8 +43,11 @@ AUTH_URI_KWARGS = {
 def _run_webapp(flow, redirect_uri=None, **kwargs):
     if redirect_uri:
         flow.redirect_uri = redirect_uri
-    else:
-        flow.redirect_uri = flow._OOB_REDIRECT_URI
+    elif not flow.redirect_uri:
+        raise exceptions.PyDataCredentialsError(
+            "Unable to get valid credentials: a redirect_uri is required when "
+            "use_local_webserver is False."
+        )
 
     auth_url, _ = flow.authorization_url(**kwargs)
     authorization_prompt_message = (
@@ -110,9 +114,10 @@ def default(
     use_local_webserver : bool, optional
         Use a local webserver for the user authentication
         :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Binds a
-        webserver to an open port on ``localhost`` between 8080 and 8089,
-        inclusive, to receive authentication token. If not set, defaults to
-        ``False``, which requests a token via the console.
+        webserver to an open port on ``localhost`` starting at 8080 to
+        receive the authentication token. Defaults to ``True``. Setting
+        ``False`` uses a deprecated copy-paste flow unless a custom
+        ``redirect_uri`` is provided.
     auth_local_webserver : deprecated
         Use the ``use_local_webserver`` parameter instead.
     redirect_uri : str, optional
@@ -310,9 +315,10 @@ def get_user_credentials(
     use_local_webserver : bool, optional
         Use a local webserver for the user authentication
         :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Binds a
-        webserver to an open port on ``localhost`` between 8080 and 8089,
-        inclusive, to receive authentication token. If not set, defaults to
-        ``False``, which requests a token via the console.
+        webserver to an open port on ``localhost`` starting at 8080 to
+        receive the authentication token. Defaults to ``True``. Setting
+        ``False`` uses a deprecated copy-paste flow unless a custom
+        ``redirect_uri`` is provided.
     auth_local_webserver : deprecated
         Use the ``use_local_webserver`` parameter instead.
     redirect_uri : str, optional
@@ -356,6 +362,7 @@ def get_user_credentials(
     # documentation and might encourage the values to be used outside of this
     # library.
 
+    use_default_webapp_redirect = False
     if use_local_webserver:
         if client_id is None:
             client_id = DESKTOP_CLIENT_ID
@@ -368,6 +375,7 @@ def get_user_credentials(
         if client_secret is None:
             client_secret = WEBAPP_CLIENT_SECRET
         redirect_uri = WEBAPP_REDIRECT_URI
+        use_default_webapp_redirect = True
 
     elif not use_local_webserver and redirect_uri:
         if (client_id is None) or (client_secret is None):
@@ -390,13 +398,26 @@ valid client_id and/or client_secret."""
 
     if credentials is None:
         app_flow = flow.InstalledAppFlow.from_client_config(
-            client_config, scopes=scopes
+            client_config, scopes=scopes, autogenerate_code_verifier=True
         )
 
         try:
             if use_local_webserver:
                 credentials = _webserver.run_local_server(app_flow, **AUTH_URI_KWARGS)
             else:
+                if use_default_webapp_redirect:
+                    # TODO(security): Remove WEBAPP_CLIENT_ID/WEBAPP_REDIRECT_URI
+                    # and revoke the redirect URI in GCP Console
+                    warnings.warn(
+                        "The default copy-paste authentication flow "
+                        "(use_local_webserver=False without a custom redirect_uri) "
+                        "is deprecated and will be removed in a future release. "
+                        "Use use_local_webserver=True (with SSH port forwarding "
+                        "on remote machines) or Application Default Credentials "
+                        "via `gcloud auth application-default login` instead.",
+                        DeprecationWarning,
+                        stacklevel=2,
+                    )
                 credentials = _run_webapp(
                     app_flow, redirect_uri=redirect_uri, **AUTH_URI_KWARGS
                 )
@@ -453,9 +474,10 @@ def save_user_credentials(
     use_local_webserver : bool, optional
         Use a local webserver for the user authentication
         :class:`google_auth_oauthlib.flow.InstalledAppFlow`. Binds a
-        webserver to an open port on ``localhost`` between 8080 and 8089,
-        inclusive, to receive authentication token. If not set, defaults to
-        ``False``, which requests a token via the console.
+        webserver to an open port on ``localhost`` starting at 8080 to
+        receive the authentication token. Defaults to ``True``. Setting
+        ``False`` uses a deprecated copy-paste flow unless a custom
+        ``redirect_uri`` is provided.
 
     Returns
     -------
